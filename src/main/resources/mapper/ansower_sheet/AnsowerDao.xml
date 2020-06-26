@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.ansower_sheet.dao.AnsowerDao">
+
+    <resultMap type="io.renren.modules.ansower_sheet.entity.AnsowerEntity" id="AnsowerMap">
+        <result property="id" column="ID"/>
+        <result property="pid" column="PID"/>
+        <result property="qid" column="QID"/>
+        <result property="job_no" column="JOB_NO"/>
+        <result property="ansower" column="ANSOWER"/>
+        <result property="uscore" column="USCORE"/>
+        <result property="start_time" column="START_TIME"/>
+        <result property="end_time" column="END_TIME"/>
+        <result property="create_time" column="CREATE_TIME"/>
+    </resultMap>
+
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select x.title,x.ptype,x.sscore,x.pscore,e.position,e.name,e.department,e.line_type lineType,e.director,p.id,p.pid,p.qid,p.job_no jobNo,p.ansower,p.uscore,p.start_time startTime,p.end_time endTime,p.create_time createTime
+        from employee e
+        right join  ansower_sheet p
+        on e.job_no = p.job_no
+        left join examination_paper x
+        on x.pid = p.pid
+        where 1=1
+        <if test="ptype !=null and ptype !=''">
+            and x.ptype like  CONCAT('%',#{ptype},'%')
+        </if>
+        <if test="title != null and title != ''">
+            and x.title like  CONCAT('%',#{title},'%')
+        </if>
+        <if test=" jobNo!=null and jobNo != ''">
+            and e.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" director!=null and director != ''">
+            and e.director  like  CONCAT('',#{director},'%')
+        </if>
+        <if test=" name!=null and name != ''">
+            and e.name  like  CONCAT('%',#{name},'%')
+        </if>
+        <if test=" pjName!=null and pjName != ''">
+            and e.pj_no  like  CONCAT('%',#{pjName},'%')
+        </if>
+        <if test=" qid!=null and qid !='' ">
+            and p.qid =  #{qid}
+        </if>
+        <if test=" pid!=null and pid !='' ">
+            and p.pid =  #{pid}
+        </if>
+        <if test=" lineType!=null and lineType !='' ">
+            and e.line_type =  #{lineType}
+        </if>
+        <if test="ansower != null and ansower != ''">
+            and  p.ansower like  CONCAT('%',#{ansower},'%')
+        </if>
+        <if test=" sdate!= null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >= #{sdate}
+        </if>
+        <if test=" edate!= null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+        order by p.create_time desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchCount" parameterType="Map" resultType="int">
+        select count(*)
+        from employee e
+        right join  ansower_sheet p
+        on e.job_no = p.job_no
+        left join examination_paper x
+        on x.pid = p.pid
+        where 1=1
+        <if test="ptype !=null and ptype !=''">
+            and x.ptype like  CONCAT('%',#{ptype},'%')
+        </if>
+        <if test="title != null and title != ''">
+            and x.title like  CONCAT('%',#{title},'%')
+        </if>
+        <if test=" jobNo!=null and jobNo != ''">
+            and e.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" director!=null and director != ''">
+            and e.director  like  CONCAT('',#{director},'%')
+        </if>
+        <if test=" name!=null and name != ''">
+            and e.name  like  CONCAT('%',#{name},'%')
+        </if>
+        <if test=" lineType!=null and lineType !='' ">
+            and e.line_type =  #{lineType}
+        </if>
+        <if test=" pjName!=null and pjName != ''">
+            and e.pj_no  like  CONCAT('%',#{pjName},'%')
+        </if>
+        <if test=" qid!=null and qid !='' ">
+            and p.qid =  #{qid}
+        </if>
+        <if test=" pid!=null and pid !='' ">
+            and p.pid =  #{pid}
+        </if>
+        <if test="ansower != null and ansower != ''">
+            and  p.ansower like  CONCAT('%',#{ansower},'%')
+        </if>
+        <if test=" sdate!= null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >= #{sdate}
+        </if>
+        <if test=" edate!= null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+    </select>
+    <insert id="saveAnsowers" parameterType="java.util.List" >
+        insert  into  ansower_sheet (PID,QID,JOB_NO,ANSOWER,USCORE,START_TIME,END_TIME,CREATE_TIME)
+        <foreach collection="list" item="QuestionEntity" index="index" separator="union all">
+            (#{pid},#{qid},#{jobNo},#{ansower},#{uscore},#{startTime},#{endTime},#{createTime}),
+        </foreach>
+    </insert>
+
+    <select id="searchListByDirector" parameterType="Map" resultType="Map">
+        select u.pid ,u.qid,u.job_no jobNo,u.ansower,u.uscore,u.create_time createTime,e.name,e.pj_name pjName,e.pj_no pjNo from ansower_sheet u
+        <if test="jobNo != null and jobNo != ''">
+        right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+        </if>
+        left join employee e on u.job_no = e.job_no
+        where 1=1
+        <if test=" pid !=null and pid != ''">
+            and  u.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+            and u.pid = (select max(pid) pid from examination_paper)
+        </if>
+        order by u.create_time desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchCountByDirector" parameterType="Map" resultType="int">
+        select count(*) from ansower_sheet u
+        <if test="jobNo != null and jobNo != ''">
+            right  join   (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+        </if>
+        where 1=1
+        <if test=" pid !=null and pid != ''">
+            and  u.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+            and u.pid = (select max(pid) pid from examination_paper)
+        </if>
+    </select>
+
+    <select id="queryQualified" parameterType="Map" resultType="int">
+        select count(*) from ansower_sheet a
+        <if test="jobNo != null and jobNo != ''">
+            right  join  (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = a.job_no
+        </if>
+        left join examination_paper q on  a.pid = q.pid
+        where  a.uscore >= q.pscore
+        <if test=" pid !=null and pid != ''">
+            and  a.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+            and a.pid = (select max(pid) pid from examination_paper)
+        </if>
+    </select>
+
+    <select id="getAllExam" parameterType="Map" resultType="Map">
+        select u.id,u.pid ,u.qid,u.job_no jobNo,u.ansower,u.uscore,u.create_time createTime from ansower_sheet u where u.pid = #{pid}
+    </select>
+</mapper>

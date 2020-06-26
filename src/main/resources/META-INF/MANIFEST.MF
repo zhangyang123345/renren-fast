@@ -1,0 +1,70 @@
+Manifest-Version: 1.0
+Class-Path: lib\kaptcha-0.0.9.jar lib\spring-boot-starter-jdbc-2.1.8.R
+ ELEASE.jar lib\jsqlparser-2.1.jar lib\springfox-swagger2-2.7.0.jar li
+ b\jdom-1.1.jar lib\hutool-all-4.1.1.jar lib\mybatis-plus-core-3.2.0.j
+ ar lib\mybatis-spring-2.0.2.jar lib\mchange-commons-java-0.2.11.jar l
+ ib\commons-compress-1.18.jar lib\commons-beanutils-1.9.3.jar lib\asm-
+ 3.3.jar lib\jackson-annotations-2.9.0.jar lib\xmlbeans-3.1.0.jar lib\
+ shiro-core-1.4.0.jar lib\spring-data-keyvalue-2.1.10.RELEASE.jar lib\
+ commons-configuration-1.10.jar lib\jackson-core-2.9.9.jar lib\commons
+ -logging-1.1.1.jar lib\spring-boot-starter-2.1.8.RELEASE.jar lib\shir
+ o-event-1.4.0.jar lib\netty-transport-4.1.39.Final.jar lib\aliyun-sdk
+ -oss-2.8.3.jar lib\javassist-3.11.0.GA.jar lib\snakeyaml-1.23.jar lib
+ \reactor-core-3.2.12.RELEASE.jar lib\filters-2.0.235.jar lib\springfo
+ x-swagger-common-2.7.0.jar lib\spring-boot-starter-web-2.1.8.RELEASE.
+ jar lib\spring-data-redis-2.1.10.RELEASE.jar lib\commons-codec-1.10.j
+ ar lib\shiro-crypto-core-1.4.0.jar lib\freemarker-2.3.29.jar lib\slf4
+ j-log4j12-1.7.28.jar lib\commons-math3-3.6.1.jar lib\joda-time-2.9.9.
+ jar lib\spring-boot-2.1.8.RELEASE.jar lib\spring-boot-autoconfigure-2
+ .1.8.RELEASE.jar lib\jjwt-0.7.0.jar lib\commons-fileupload-1.2.2.jar 
+ lib\netty-handler-4.1.39.Final.jar lib\druid-spring-boot-starter-1.1.
+ 13.jar lib\spring-data-commons-2.1.10.RELEASE.jar lib\shiro-crypto-ha
+ sh-1.4.0.jar lib\json-20140107.jar lib\lombok-1.18.4.jar lib\spring-p
+ lugin-core-1.2.0.RELEASE.jar lib\reactive-streams-1.0.3.jar lib\sprin
+ gfox-swagger-ui-2.7.0.jar lib\jackson-datatype-jdk8-2.9.9.jar lib\com
+ mons-collections4-4.3.jar lib\commons-collections-3.2.2.jar lib\poi-4
+ .1.0.jar lib\asm-tree-3.3.jar lib\spring-context-5.1.9.RELEASE.jar li
+ b\log4j-1.2.17.jar lib\poi-ooxml-4.1.0.jar lib\jackson-module-paramet
+ er-names-2.9.9.jar lib\bcprov-jdk15on-1.59.jar lib\netty-resolver-4.1
+ .39.Final.jar lib\shiro-web-1.4.0.jar lib\shiro-config-core-1.4.0.jar
+  lib\junit-4.12.jar lib\spring-plugin-metadata-1.2.0.RELEASE.jar lib\
+ spring-jdbc-5.1.9.RELEASE.jar lib\fastjson-1.2.60.jar lib\swagger-ann
+ otations-1.5.13.jar lib\springfox-core-2.7.0.jar lib\mybatis-plus-ann
+ otation-3.2.0.jar lib\asm-commons-3.3.jar lib\log4j-api-2.11.2.jar li
+ b\mybatis-3.5.2.jar lib\qiniu-java-sdk-7.2.23.jar lib\curvesapi-1.06.
+ jar lib\hibernate-validator-6.0.17.Final.jar lib\spring-web-5.1.9.REL
+ EASE.jar lib\druid-1.1.13.jar lib\spring-jcl-5.1.9.RELEASE.jar lib\ha
+ mcrest-core-1.3.jar lib\logback-classic-1.2.3.jar lib\mybatis-plus-bo
+ ot-starter-3.2.0.jar lib\shiro-config-ogdl-1.4.0.jar lib\spring-boot-
+ starter-data-redis-2.1.8.RELEASE.jar lib\commons-lang-2.6.jar lib\spr
+ ingfox-schema-2.7.0.jar lib\HikariCP-3.2.0.jar lib\netty-codec-4.1.39
+ .Final.jar lib\shiro-lang-1.4.0.jar lib\mybatis-plus-extension-3.2.0.
+ jar lib\cos_api-5.4.6.jar lib\commons-lang3-3.8.1.jar lib\spring-tx-5
+ .1.9.RELEASE.jar lib\mysql-connector-java-5.1.27.jar lib\reflections-
+ 0.9.11.jar lib\jul-to-slf4j-1.7.28.jar lib\postgresql-42.2.6.jar lib\
+ aspectjweaver-1.9.4.jar lib\validation-api-2.0.1.Final.jar lib\log4j-
+ to-slf4j-2.11.2.jar lib\springfox-spi-2.7.0.jar lib\okio-1.14.0.jar l
+ ib\shiro-cache-1.4.0.jar lib\okhttp-3.11.0.jar lib\tomcat-embed-core-
+ 9.0.24.jar lib\spring-boot-starter-json-2.1.8.RELEASE.jar lib\swagger
+ -models-1.5.13.jar lib\shiro-spring-1.4.0.jar lib\byte-buddy-1.9.16.j
+ ar lib\gson-2.8.5.jar lib\spring-boot-starter-tomcat-2.1.8.RELEASE.ja
+ r lib\netty-common-4.1.39.Final.jar lib\spring-context-support-5.1.9.
+ RELEASE.jar lib\spring-webmvc-5.1.9.RELEASE.jar lib\mapstruct-1.1.0.F
+ inal.jar lib\shiro-crypto-cipher-1.4.0.jar lib\jboss-logging-3.3.3.Fi
+ nal.jar lib\logback-core-1.2.3.jar lib\jackson-databind-2.9.9.3.jar l
+ ib\jackson-datatype-jsr310-2.9.9.jar lib\mybatis-plus-3.2.0.jar lib\h
+ ttpcore-4.4.12.jar lib\spring-core-5.1.9.RELEASE.jar lib\spring-boot-
+ configuration-processor-2.1.8.RELEASE.jar lib\httpclient-4.5.9.jar li
+ b\lettuce-core-5.1.8.RELEASE.jar lib\xwork-core-2.3.15.3.jar lib\clas
+ smate-1.4.0.jar lib\tomcat-embed-websocket-9.0.24.jar lib\struts2-cor
+ e-2.3.15.3.jar lib\javassist-3.21.0-GA.jar lib\spring-expression-5.1.
+ 9.RELEASE.jar lib\netty-buffer-4.1.39.Final.jar lib\ognl-3.0.6.jar li
+ b\mapper-3.4.6.jar lib\spring-boot-starter-aop-2.1.8.RELEASE.jar lib\
+ guava-18.0.jar lib\persistence-api-1.0.jar lib\tomcat-embed-el-9.0.24
+ .jar lib\slf4j-api-1.7.28.jar lib\commons-io-2.5.jar lib\spring-oxm-5
+ .1.9.RELEASE.jar lib\springfox-spring-web-2.7.0.jar lib\spring-aop-5.
+ 1.9.RELEASE.jar lib\spring-beans-5.1.9.RELEASE.jar lib\spring-boot-st
+ arter-logging-2.1.8.RELEASE.jar lib\quartz-2.3.0.jar lib\javax.annota
+ tion-api-1.3.2.jar lib\poi-ooxml-schemas-4.1.0.jar
+Main-Class: io.renren.RenrenApplication
+

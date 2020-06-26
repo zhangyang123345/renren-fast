@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.examination_paper.dao.ExamPaperDao">
+
+    <resultMap type="io.renren.modules.examination_paper.entity.ExampaperEntity" id="ExampaperMap">
+        <result property="pid" column="PID"/>
+        <result property="title" column="TITLE"/>
+        <result property="ptype" column="PTYPE"/>
+        <result property="sscore" column="SSCORE"/>
+        <result property="pscore" column="PSCORE"/>
+        <result property="stime" column="STIME"/>
+        <result property="create_time" column="CREATE_TIME"/>
+    </resultMap>
+
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select pid,title,ptype ,sscore ,pscore ,stime ,create_time createTime from  examination_paper p
+        where 1=1
+        <if test=" title!=null and title != ''">
+            and p.title like CONCAT('%',#{title},'%')
+        </if>
+        <if test=" pid!=null and pid != ''">
+            and p.pid  =  #{pid}
+        </if>
+        <if test=" ptype!=null and ptype !='' ">
+            and p.ptype  =  #{ptype}
+        </if>
+        <if test="sdate != null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >=#{sdate}
+        </if>
+        <if test="edate != null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+        order by create_time desc limit  #{pageOffset},#{rows}
+    </select>
+    <select id="searchListCount" parameterType="Map" resultType="int">
+        select count(*) from  examination_paper p
+        where 1=1
+        <if test=" title!=null and title != ''">
+            and p.title like CONCAT('%',#{title},'%')
+        </if>
+        <if test=" pid!=null and pid != ''">
+            and p.pid  =  #{pid}
+        </if>
+        <if test=" ptype!=null and ptype !='' ">
+            and p.ptype  =  #{ptype}
+        </if>
+        <if test="sdate != null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >=#{sdate}
+        </if>
+        <if test="edate != null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+    </select>
+
+    <insert id="saveExam" useGeneratedKeys="true" keyProperty="pid"  parameterType="io.renren.modules.examination_paper.entity.ExampaperEntity" >
+        insert  into  examination_paper (TITLE,PTYPE,SSCORE,PSCORE,STIME) VALUES
+        (#{title},#{ptype},#{sscore},#{pscore},#{stime});
+    </insert>
+
+    <select id="getExam" parameterType="io.renren.modules.examination_paper.entity.ExampaperEntity" resultType="Map">
+      select pid,title,ptype ,sscore ,pscore ,stime ,create_time createTime from examination_paper
+      where 1=1
+      <if test="pid != null and pid != ''">
+          and pid = #{pid}
+      </if>
+      <if test="title !=null and title != ''">
+          and title like    CONCAT('%',#{title},'%')
+      </if>
+      <if test="ptype != null and ptype != ''">
+          and ptype = #{ptype}
+      </if>
+      <if test="sscore != null and sscore != ''">
+          and sscore = #{sscore}
+      </if>
+      <if test="pscore != null and pscore != ''">
+          and pscore = #{pscore}
+      </if>
+      <if test="stime != null and stime != ''">
+          and stime = #{stime}
+      </if>
+    </select>
+</mapper>

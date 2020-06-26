@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.lien_type.dao.LineTypeDao">
+
+    <resultMap type="io.renren.modules.lien_type.entity.LineTypeEntity" id="LienTypeMap">
+        <result property="id" column="ID"/>
+        <result property="lien_type" column="LINE_TYPE"/>
+    </resultMap>
+
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select id,line_type lineType from  line_type
+        order by id
+    </select>
+    <update id="deleteLine" parameterType="Map" >
+       delete from line_type p where p.id = #{id}
+    </update>
+
+    <insert id="insertLine" parameterType="java.util.List" >
+        insert  into  line_type (LINE_TYPE) values (#{lienType})
+    </insert>
+</mapper>

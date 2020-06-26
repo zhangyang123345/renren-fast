@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.employees.dao.EmployeesDao">
+
+    <resultMap type="io.renren.modules.employees.entity.EmployeesEntity" id="EmployeeMap">
+        <result property="id" column="ID"/>
+        <result property="job_no" column="JOB_NO"/>
+        <result property="pj_no" column="PJ_NO"/>
+        <result property="pj_name" column="PJ_NAME"/>
+        <result property="p_category" column="P_CATEGORY"/>
+        <result property="name" column="NAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="phone" column="PHONE"/>
+        <result property="email" column="EMAIL"/>
+        <result property="plant_type" column="PLANT_TYPE"/>
+        <result property="department" column="DEPARTMENT"/>
+        <result property="position" column="POSITION"/>
+        <result property="cost_gategory" column="COST_CATEGORY"/>
+        <result property="wclass" column="WCLASS"/>
+        <result property="line_type" column="LINE_TYPE"/>
+        <result property="office_location" column="OFFICE_LOCATION"/>
+        <result property="director" column="DIRECTOR"/>
+        <result property="entry_date" column="ENTRY_DATE"/>
+        <result property="comment" column="COMMENT"/>
+        <result property="active" column="ACTIVE"/>
+    </resultMap>
+
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select id,job_no jobNo,pj_no pjNo ,pj_name pjName ,p_category pCategory ,name,sex,phone,email,plant_type plantType ,
+        department,position,cost_category costCategory ,wclass,line_type lineType,office_location officeLocation,director,entry_date entryDate,
+        comment,active from  employee p
+        where  1=1
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" pjNo!=null and pjNo !='' ">
+            and p.pj_no =  #{pjNo}
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+        <if test=" entryDateStart!= null and entryDateStart != ''">
+            and  to_char(p.entry_date ,'yyyy-mm-dd') >= #{entryDateStart}
+        </if>
+        <if test=" entryDateEnd!= null and entryDateEnd != ''">
+            and  to_char(p.entry_date ,'yyyy-mm-dd') &lt;= #{entryDateEnd}
+        </if>
+        <if test="active != null and active != ''">
+          and p.active = #{active}
+        </if>
+         order by p.id desc  limit  #{pageOffset},#{rows}
+    </select>
+    <select id="searchListCount" parameterType="Map" resultType="int">
+        select count(*) from  employee p
+        where 1=1
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" pjNo!=null and pjNo !='' ">
+            and p.pj_no =  #{pjNo}
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+        <if test=" entryDateStart!= null and entryDateStart != ''">
+            and  date_format(p.entry_date, '%Y-%m-%d') >= #{entryDateStart}
+        </if>
+        <if test=" entryDateEnd!= null and entryDateEnd != ''">
+            and  date_format(p.entry_date, '%Y-%m-%d') &lt;= #{entryDateEnd}
+        </if>
+        <if test="active != null and active != ''">
+            and p.active = #{active}
+        </if>
+    </select>
+
+    <insert id="saveEmployees" parameterType="java.util.List" >
+        insert  into  employee (JOB_NO,PJ_NO,PJ_NO,P_CATEGORY,NAME,SEX,PHONE,EMAIL,PLANT_TYPE,DEPARTMENT,POSITION,COST_CATEGORY,WCLASS,LINE_TYPE,LINE_TYPE,OFFICE_LOCATION,DIRECTOR,ENTRY_DATE,COMMENT,ACTIVE)
+        <foreach collection="list" item="QuestionEntity" index="index" separator="union all">
+            (#{jobNo},#{pjNo},#{pCategory},#{name},#{sex},#{phone},#{email},#{plantType},#{department},#{position},#{costCategory},#{wclass},#{lineType},#{officeLocation},#{director},#{entryDate},#{comment},1),
+        </foreach>
+    </insert>
+
+    <select id="getPermiEmpl" parameterType="Map" resultType="java.util.List">
+
+    </select>
+    <select id="getEmpByid" parameterType="Map" resultType="Map">
+        select  id,job_no jobNo,pj_no pjNo ,pj_name pjName ,p_category pCategory ,name,sex,phone,email,plant_type plantType ,
+        department,position,cost_category costCategory ,wclass,line_type lineType,office_location officeLocation,director,entry_date entryDate,
+        comment,active from  employee p where 1=1
+        <if test="id != null and id != ''">
+           and  p.id = #{id}
+        </if>
+        <if test="jobNo != null and jobNo != ''">
+           and  p.job_no = #{jobNo}
+        </if>
+
+    </select>
+    <update id="setQuit" parameterType="Map">
+        update employee set active = #{active}
+        <if test="comment != null and comment != '' ">
+            , comment = #{comment}
+        </if>
+        where  1=1
+        <if test="id != null and id != ''">
+            and id = #{id}
+        </if>
+        <if test="jobNo != null and jobNo != ''">
+            and job_no = #{jobNo}
+        </if>
+    </update>
+
+    <update id="updateDirector">
+        update employee e left join employee p on  p.name = e.pj_name  set  e.pj_no = p.job_no
+    </update>
+    <select id="getJobNo" resultType="Map">
+        select job_no jobNo ,id from employee
+    </select>
+    <select id="getWorkEmpl" parameterType="Map" resultType="Map">
+        select job_no jobNo,id,name from employee  where pj_no = #{jobNo} or job_no = #{jobNo}
+    </select>
+</mapper>

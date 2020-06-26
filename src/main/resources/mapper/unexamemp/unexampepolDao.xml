@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.unexamemp.dao.UnexampepolDao">
+
+    <resultMap type="io.renren.modules.unexamemp.entity.UnexampepolEntity" id="UnexamMap">
+        <result property="job_no" column="JOB_NO"/>
+        <result property="pid" column="PID"/>
+        <result property="name" column="NAME"/>
+        <result property="title" column="TITLE"/>
+    </resultMap>
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select id,job_no jobNo,pid,name,title from  unexamemp p
+        where 1=1
+        <if test=" title!=null and title != ''">
+            and p.title ilike  '%'||#{title}||'%'
+        </if>
+        <if test=" pid!=null and pid !='' ">
+            and p.pid  =  #{pid}
+        </if>
+        <if test="jobNo != null and jobNo != ''">
+            and  p.job_no  like #{jobNo}||'%'
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name  like  '%'||#{name}||'%'
+        </if>
+        order by p.id desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchListCount" parameterType="Map" resultType="int">
+        select count(*) from  unexamemp p
+        where 1=1
+        <if test=" title!=null and title != ''">
+            and p.title ilike  '%'||#{title}||'%'
+        </if>
+        <if test=" pid!=null and pid !='' ">
+            and p.pid  =  #{pid}
+        </if>
+        <if test="jobNo != null and jobNo != ''">
+            and  p.job_no  like #{jobNo}||'%'
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name  like  '%'||#{name}||'%'
+        </if>
+    </select>
+
+    <insert id="saveUnexampepol" parameterType="java.util.List" >
+        insert  into  question (PID,JOB_NO,NAME,TITLE)
+        <foreach collection="list" item="UnexampepolEntity" index="index" separator="union all">
+            (#{pid},#{jobNo},#{name},#{title}),
+        </foreach>
+    </insert>
+    <insert id="updateUnexam" parameterType="ExampaperEntity">
+        insert into unexamemp (JOB_NO,PID,NAME,TITLE)
+        ( select e.job_no,#{pid},e.name,(select title from examination_paper where pid = #{pid}) title from employee e left outer join
+         (select p.pid,a.job_no,p.title from examination_paper  p  right join  ansower_sheet a  on  p.pid = a.pid
+         where  1=1
+         <if test="title != null and title != ''">
+         and p.title ilike '%'||#{title}||'%'
+         </if>
+         <if test="ptype != null and ptype != ''">
+         and p.ptype = #{ptype}
+         </if>
+         and a.pid = #{pid} )
+          exam on e.job_no = exam.job_no  where active = 1 and pid is null)
+    </insert>
+
+    <select id="searchListByDirector" parameterType="Map" resultType="Map">
+        select u.id,u.job_no jobNo,u.pid,u.name,u.title
+        <if test="jobNo != null and jobNo != ''">
+        , emp.director
+        </if>
+        from unexamemp u
+        <if test="jobNo != null and jobNo != ''">
+           right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+        </if>
+        where 1=1
+        <if test=" pid !=null and pid != ''">
+            and  u.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+            and u.pid = (select max(pid) pid from examination_paper)
+        </if>
+        order by u.id desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="exportExcel" parameterType="Map" resultType="Map">
+        select u.id,u.job_no jobNo,u.pid,u.name,u.title ,emp.director,ep.ptype,emp.position,emp.department,'未参考' status  from unexamemp u left join examination_paper ep on u.pid = ep.pid
+           right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+        where 1=1
+        <if test=" pid !=null and pid != ''">
+            and  u.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+            and u.pid = (select max(pid) pid from examination_paper)
+        </if>
+        order by u.id desc
+    </select>
+    <select id="searchCountByDirector" parameterType="Map" resultType="int">
+        select count(*) from unexamemp u
+        <if test="jobNo != null and jobNo != ''">
+            right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+        </if>
+        where 1=1
+        <if test=" pid !=null and pid != ''">
+          and  u.pid = #{pid}
+        </if>
+        <if test="pid == null or pid ==''">
+           and u.pid = (select max(pid) pid from examination_paper)
+        </if>
+    </select>
+</mapper>

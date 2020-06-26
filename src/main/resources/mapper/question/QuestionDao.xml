@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.question.dao.QuestionDao">
+
+    <resultMap type="io.renren.modules.question.entity.QuestionEntity" id="QuestionMap">
+        <result property="qid" column="QID"/>
+        <result property="pid" column="PID"/>
+        <result property="question" column="QUESTION"/>
+        <result property="ansower" column="ANSOWER"/>
+        <result property="type" column="TYPE"/>
+        <result property="score" column="SCORE"/>
+    </resultMap>
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select e.title,e.ptype,e.sscore,e.pscore,p.qid,p.pid,SUBSTRING_INDEX(p.question,',:,',1) question,SUBSTRING_INDEX(p.question,',:,',-1) quesmenu,p.ansower,p.type,p.score,p.create_time as createTime from  question p left  join  examination_paper  e on p.pid = e.pid
+        where 1=1
+        <if test=" question!=null and question != ''">
+            and SUBSTRING_INDEX(p.question,',:,',1) like  CONCAT('%',#{question},'%')
+        </if>
+        <if test=" type!=null and type !='' ">
+            and p.type  like  CONCAT('%',#{type},'%')
+        </if>
+        <if test="pid != null and pid != ''">
+            and  p.pid=#{pid}
+        </if>
+        <if test="qid != null and qid != ''">
+            and  p.qid=#{qid}
+        </if>
+        <if test="sdate != null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >=#{sdate}
+        </if>
+        <if test="edate != null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+        order by p.qid desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchListCount" parameterType="Map" resultType="int">
+        select count(*) from  question p left  join  examination_paper  e on p.pid = e.pid
+        where 1=1
+        <if test=" question!=null and question != ''">
+            and SUBSTRING_INDEX(p.question,',:,',1) like  CONCAT('%',#{question},'%')
+        </if>
+        <if test=" type!=null and type !='' ">
+            and p.type  like  CONCAT('%',#{type},'%')
+        </if>
+        <if test="pid != null and pid != ''">
+            and  p.pid=#{pid}
+        </if>
+        <if test="qid != null and qid != ''">
+            and  p.qid=#{qid}
+        </if>
+        <if test="sdate != null and sdate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') >=#{sdate}
+        </if>
+        <if test="edate != null and edate != ''">
+            and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
+        </if>
+    </select>
+
+    <insert id="saveQuestions" parameterType="java.util.List" >
+        insert  into  question (PID,QUESTION,ANSOWER,TYPE,SCORE)
+        <foreach collection="list" item="QuestionEntity" index="index" separator="union all">
+        (#{pid},#{question},#{ansower},#{type},#{score},#{createTime}),
+        </foreach>
+    </insert>
+</mapper>

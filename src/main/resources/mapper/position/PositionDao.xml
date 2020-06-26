@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.position.dao.PositionDao">
+
+    <resultMap type="io.renren.modules.position.entity.PositionEntity" id="PositionMap">
+        <result property="id" column="ID"/>
+        <result property="plant_type" column="PLANT_TYPE"/>
+    </resultMap>
+
+
+    <select id="search" parameterType="Map" resultType="Map">
+        select id,position from  position p
+        order by id    </select>
+    <update id="delete" parameterType="Map" >
+       delete from position p where p.id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="java.util.List" >
+        insert  into  position (PLANT_TYPE) values (#{plantType})
+    </insert>
+</mapper>
