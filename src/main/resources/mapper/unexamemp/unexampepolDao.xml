@@ -51,7 +51,7 @@
         </foreach>
     </insert>
     <insert id="updateUnexam" parameterType="ExampaperEntity">
-        insert into unexamemp (JOB_NO,PID,NAME,TITLE)
+        insert into unexamemp(job_no,pid,name,title)
         ( select e.job_no,#{pid},e.name,(select title from examination_paper where pid = #{pid}) title from employee e left outer join
          (select p.pid,a.job_no,p.title from examination_paper  p  right join  ansower_sheet a  on  p.pid = a.pid
          where  1=1
@@ -62,8 +62,12 @@
          and p.ptype = #{ptype}
          </if>
          and a.pid = #{pid} )
-          exam on e.job_no = exam.job_no  where active = 1 and pid is null)
+         exam on e.job_no = exam.job_no  where active = 1 and pid is null) ;
     </insert>
+
+    <update id="deleteUnexam" parameterType="ExampaperEntity">
+        delete from unexamemp where pid = #{pid} ;
+    </update>
 
     <select id="searchListByDirector" parameterType="Map" resultType="Map">
         select u.id,u.job_no jobNo,u.pid,u.name,u.title

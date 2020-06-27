@@ -98,7 +98,7 @@ public class AnsowerController {
                     updateList.add(data);
                 } else if(distinct.contains(data.getJob_no())){
                     AnsowerEntity dist = ansowerList.get(distinct.indexOf(data.getJob_no()));
-                    if(data.getUscore()>dist.getUscore()) ansowerList.add(distinct.indexOf(data.getJob_no()),data);
+                    if(data.getUscore()>dist.getUscore()) ansowerList.set(distinct.indexOf(data.getJob_no()),data);
                 } else {
                     ansowerList.add(data);
                     distinct.add(data.getJob_no());
@@ -111,6 +111,7 @@ public class AnsowerController {
             unexampepolService.updateUnexam(paper);
         } catch (Exception e) {
             e.printStackTrace();
+            return R.error("字段匹配错误！请检查");
         }
         return R.ok();
     }
@@ -229,6 +230,8 @@ public class AnsowerController {
         params.put("rows", 10);
         params.put("page", 1);
         params.put("pageOffset", 0);
+        params.put("order","create_time");
+        params.put("asc", "asc");
         String job_no = requData.get("jobNo")!=null?requData.get("jobNo").toString():"";
         List<String> qualifRate = new ArrayList<>();
         List<String> examRate = new ArrayList<>();

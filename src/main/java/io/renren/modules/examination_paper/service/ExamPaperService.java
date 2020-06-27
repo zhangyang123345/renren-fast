@@ -37,6 +37,10 @@ public interface ExamPaperService extends IService<ExampaperEntity> {
     @Transactional
     public int saveExam(ExampaperEntity entity);
 
-
-
+    /**
+     * 查询试卷信息<List>
+     * @param params
+     * @return
+     */
+    public List<Map> queryExam(ExampaperEntity params);
 }

@@ -32,7 +32,19 @@
         <if test="edate != null and edate != ''">
             and  date_format(p.create_time, '%Y-%m-%d') &lt;= #{edate}
         </if>
-        order by create_time desc limit  #{pageOffset},#{rows}
+          order by
+        <choose>
+            <when test="order != null and order != ''">
+                 ${order}
+                <if test="asc != null and asc != ''">
+                    ${asc}
+                </if>
+            </when>
+            <otherwise>
+                create_time   desc
+            </otherwise>
+        </choose>
+        limit  #{pageOffset},#{rows}
     </select>
     <select id="searchListCount" parameterType="Map" resultType="int">
         select count(*) from  examination_paper p
@@ -80,5 +92,28 @@
       <if test="stime != null and stime != ''">
           and stime = #{stime}
       </if>
+    </select>
+    <select id="queryExam" parameterType="Map" resultType="Map">
+        select pid,title,ptype ,sscore ,pscore ,stime ,create_time createTime from examination_paper
+        where 1=1
+        <if test="pid != null and pid != ''">
+            and pid = #{pid}
+        </if>
+        <if test="title !=null and title != ''">
+            and title like    CONCAT('%',#{title},'%')
+        </if>
+        <if test="ptype != null and ptype != ''">
+            and ptype = #{ptype}
+        </if>
+        <if test="sscore != null and sscore != ''">
+            and sscore = #{sscore}
+        </if>
+        <if test="pscore != null and pscore != ''">
+            and pscore = #{pscore}
+        </if>
+        <if test="stime != null and stime != ''">
+            and stime = #{stime}
+        </if>
+        order by  create_time desc ;
     </select>
 </mapper>

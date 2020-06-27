@@ -55,6 +55,7 @@ public class UnexampepolServiceImpl extends ServiceImpl<UnexampepolDao, Unexampe
      */
     @Override
     public Boolean updateUnexam(ExampaperEntity params){
+        baseMapper.deleteUnexam(params);
         return baseMapper.updateUnexam(params);
     }
 

@@ -136,4 +136,15 @@ public class ExamPaperController {
         examPaperService.saveExam(parma);
         return R.ok().put("pid",parma.getPid());
     }
+
+    /**
+     * 查询试卷信息<List>
+     * @param params
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/queryExam")
+    public R queryExam(ExampaperEntity params) {
+        return R.ok().put("list", examPaperService.queryExam(params));
+    }
 }

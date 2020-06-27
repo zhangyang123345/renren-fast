@@ -31,6 +31,12 @@ public interface UnexampepolDao extends BaseMapper<UnexampepolEntity> {
     public Boolean  saveUnexampepol(List<Map<String,Object>> params);
 
     /**
+     * 同步更新未参考人员名单
+     * @param params
+     * @return
+     */
+    public Boolean deleteUnexam(ExampaperEntity params);
+    /**
      * 更新未参考人员名单
      * @param params
      * @return

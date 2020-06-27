@@ -77,4 +77,14 @@ public class ExamPaperServeceImpl extends ServiceImpl<ExamPaperDao, ExampaperEnt
         return baseMapper.saveExam(entity);
     }
 
+
+    /**
+     * 查询试卷信息<List>
+     * @param params
+     * @return
+     */
+    @Override
+    public List<Map> queryExam(ExampaperEntity params) {
+        return baseMapper.queryExam(params);
+    }
 }

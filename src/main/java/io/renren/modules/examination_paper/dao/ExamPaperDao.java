@@ -36,4 +36,12 @@ public interface ExamPaperDao extends BaseMapper<ExampaperEntity> {
      * @return
      */
     public Map getExam(ExampaperEntity params);
+    /**
+     * 查询试卷信息<List>
+     * @param params
+     * @return
+     */
+    public List<Map> queryExam(ExampaperEntity params);
+
+
 }
