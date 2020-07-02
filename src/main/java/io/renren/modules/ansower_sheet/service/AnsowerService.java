@@ -50,6 +50,13 @@ public interface AnsowerService extends IService<AnsowerEntity> {
     public Map examDataByDirector( Map<String,Object> params) ;
 
     /**
+     * 获取各主管下员工数据《统计》
+     *
+     * @param params
+     * @return
+     */
+    public Map examHisData(Map<String, Object> params);
+    /**
      * 获取试卷所有员工答题数据
      * @param params
      * @return

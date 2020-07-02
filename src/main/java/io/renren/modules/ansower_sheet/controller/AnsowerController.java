@@ -182,10 +182,15 @@ public class AnsowerController {
         DecimalFormat format = new DecimalFormat("0.0");
         int index = 0 ;
         for (Map<String,Object> it : empData) {
-            params.put("jobNo", it.get("jobNo"));
+            params.put("jobNo", it.get("jobNo").toString());
             Map data = ansowerService.examDataByDirector(params);
-            Double qualifR = (data.get("examCount") == null || Integer.parseInt(data.get("examCount").toString()) == 0) ? 0 : (Double.valueOf(data.get("qualified").toString()) / Double.valueOf(data.get("examCount").toString()));
-            Double examR = (data.get("total") == null || Integer.parseInt(data.get("total").toString()) == 0) ? 0 : (Double.valueOf(data.get("examCount").toString()) / Double.valueOf(data.get("total").toString()));
+            int examCount = data.get("examCount") != null? Integer.parseInt(data.get("examCount").toString()):0;
+            int qualified = data.get("qualified") != null? Integer.parseInt(data.get("qualified").toString()):0;
+            int unExam = data.get("unExam") != null? Integer.parseInt(data.get("unExam").toString()):0;
+            int total = unExam+examCount;
+            data.put("total",total);
+            Double qualifR = examCount == 0 ? 0 : (Double.valueOf(qualified) / Double.valueOf(examCount));
+            Double examR = total == 0 ? 0 : (Double.valueOf(examCount) / Double.valueOf(total));
             data.put("jobNo", it.get("jobNo"));
             data.put("name", it.get("name"));
             data.put("qualifRate", format.format(qualifR*100));
@@ -240,12 +245,13 @@ public class AnsowerController {
         DecimalFormat format = new DecimalFormat("0.00");
         for (Map exam : examData) {
             exam.put("jobNo", job_no);
-            Map ansData = ansowerService.examDataByDirector(exam);
-//            exam.put("unExamCount", ansData.get("unExamCount"));
-//            exam.put("qualified", ansData.get("qualified"));
-//            exam.put("total", ansData.get("total"));
-            Double qualifR = (ansData.get("examCount") == null || Integer.parseInt(ansData.get("examCount").toString()) == 0) ? 0 : (Double.valueOf(ansData.get("qualified").toString()) / Double.valueOf(ansData.get("examCount").toString()));
-            Double examR = (ansData.get("total") == null || Integer.parseInt(ansData.get("total").toString()) == 0) ? 0 : (Double.valueOf(ansData.get("examCount").toString()) / Double.valueOf(ansData.get("total").toString()));
+            Map ansData = ansowerService.examHisData(exam);
+            int examCount = ansData.get("examCount") != null? Integer.parseInt(ansData.get("examCount").toString()):0;
+            int qualified = ansData.get("qualified") != null? Integer.parseInt(ansData.get("qualified").toString()):0;
+            int unExam = ansData.get("unExam") != null? Integer.parseInt(ansData.get("unExam").toString()):0;
+            int total = unExam+examCount;
+            Double qualifR = examCount == 0 ? 0 : (Double.valueOf(qualified) / Double.valueOf(examCount));
+            Double examR = total == 0 ? 0 : (Double.valueOf(examCount) / Double.valueOf(total));
             name.add(exam.get("createTime").toString().split(" ")[0]);
             qualifRate.add(format.format(qualifR*100));
             examRate.add(format.format(examR*100));

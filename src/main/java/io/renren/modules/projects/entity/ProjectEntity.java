@@ -2,8 +2,12 @@ package io.renren.modules.projects.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Data
 @TableName("projects")
@@ -73,7 +77,21 @@ public class ProjectEntity implements Serializable {
     /**
      *完成时间
      */
-    private String close_date;
+    private Date close_date = null;
+
+    /**
+     * Non NT ID
+     * @return
+     */
+    private  int nntid;
+
+    public int getNntid() {
+        return nntid;
+    }
+
+    public void setNntid(int nntid) {
+        this.nntid = nntid;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -199,12 +217,22 @@ public class ProjectEntity implements Serializable {
         this.customer_field = customer_field;
     }
 
-    public String getClose_date() {
+    public Date getClose_date() {
         return close_date;
     }
 
     public void setClose_date(String close_date) {
-        this.close_date = close_date;
+        if (close_date != null && StringUtils.isNotEmpty(close_date)) {
+            if(close_date.indexOf(" ")>0) close_date = close_date.substring(0, close_date.indexOf(" "));
+            Date date = null;
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            try {
+                date = format.parse(close_date);
+                this.close_date = date;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

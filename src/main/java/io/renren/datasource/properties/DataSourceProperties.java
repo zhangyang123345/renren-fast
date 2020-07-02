@@ -38,7 +38,7 @@ public class DataSourceProperties {
     private boolean poolPreparedStatements = false;
     private int maxOpenPreparedStatements = -1;
     private boolean sharePreparedStatements = false;
-    private String filters = "stat,wall";
+    private String filters = "stat"; //wall
 
     public String getDriverClassName() {
         return driverClassName;

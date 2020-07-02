@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.projects.dao.ProjectDao">
+
+    <select id="searchList" parameterType="Map" resultType="Map">
+        select  e.job_no jobNo,e.name,e.email,e.phone,e.department,e.position,e.line_type lineType,e.director,
+        (select count(*) from project_detail pd where ((pd.member_email = e.email and e.email != '' ) or pd.nntid = e.job_no) and project_type = 'A3' and close_date is not null) A3,
+        (select count(*) from project_detail pd where ((pd.member_email = e.email and e.email != '' ) or pd.nntid = e.job_no) and project_type = 'Blitz' and close_date is not null) Blitz,
+        (select count(*) from project_detail pd where (pd.member_email = e.email and e.email != '' ) or pd.nntid = e.job_no)  count,
+        (select count(*) from project_target pd where pd.job_no = e.job_no )  target,
+        (select count/target) rate from employee e  where e.active = 1
+
+        <if test=" jobNo!=null and jobNo != ''">
+            and e.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and  e.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  e.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  e.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  e.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  e.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  e.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  e.line_type = #{lineType}
+        </if>
+        order by e.id desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchListCount" parameterType="Map" resultType="int">
+        select count(*) from employee p  where active = 1
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+    </select>
+    <select id="projectList" parameterType="Map" resultType="Map">
+          select id,project_id projectId ,project_name projectName,project_type projectType,state ,lsc_date lscDate,submit_date submitDate,submit_email submitEmail,process_improve  processImprove,
+            process_email processEmail,team_leader teamLeader,leader_email leaderEmail,team_member teamMember,member_email memberEmail,customer_field  customerField,close_date closeDate ,nntid
+            from projects p where 1=1
+        <if test=" projectId!=null and projectId != ''">
+            and p.project_id  like  CONCAT('',#{projectId},'%')
+        </if>
+        <if test="projectName != null and projectName != ''">
+            and  p.project_name like CONCAT('%',#{projectName},'%')
+        </if>
+        <if test=" projectType!= null and projectType != ''">
+            and  p.project_type = #{projectType}
+        </if>
+        <if test=" customerField!= null and customerField != ''">
+            and  p.customer_field = #{customerField}
+        </if>
+        <if test=" state!= null and state != ''">
+            and  p.state = #{state}
+            <if test=" state!= null and start != '' and state == 'Closed'">
+                and  p.close_date >= #{start}
+            </if>
+            <if test=" end!= null and end != '' and state == 'Closed'">
+                and  p.close_date &lt;= #{end}
+            </if>
+        </if>
+        <if test=" state == null or state == '' or state != 'Closed'">
+            <if test=" start!= null and start != ''">
+                and  p.submit_date >= #{start}
+            </if>
+            <if test=" end!= null and end != ''">
+                and  p.submit_date &lt;= #{end}
+            </if>
+        </if>
+        order by
+        <if test="state != null and state == 'Closed'">
+           p.close_date
+        </if>
+        <if test="state == null or state == '' or state != 'Closed'">
+            p.submit_date
+        </if>
+        desc  limit #{pageOffset},#{rows}
+    </select>
+    <select id="projectListCount" parameterType="Map" resultType="int">
+        select count(*)
+        from projects p where 1=1
+        <if test=" projectId!=null and projectId != ''">
+            and p.project_id  like  CONCAT('',#{projectId},'%')
+        </if>
+        <if test="projectName != null and projectName != ''">
+            and  p.project_name like CONCAT('%',#{projectName},'%')
+        </if>
+        <if test=" projectType!= null and projectType != ''">
+            and  p.project_type = #{projectType}
+        </if>
+        <if test=" customerField!= null and customerField != ''">
+            and  p.customer_field = #{customerField}
+        </if>
+        <if test=" state!= null and state != ''">
+            and  p.state = #{state}
+            <if test=" state!= null and start != '' and state == 'Closed'">
+                and  p.close_date >= #{start}
+            </if>
+            <if test=" end!= null and end != '' and state == 'Closed'">
+                and  p.close_date &lt;= #{end}
+            </if>
+        </if>
+        <if test=" state == null or state == '' or state != 'Closed'">
+            <if test=" start!= null and start != ''">
+                and  p.submit_date >= #{start}
+            </if>
+            <if test=" end!= null and end != ''">
+                and  p.submit_date &lt;= #{end}
+            </if>
+        </if>
+    </select>
+    <select id="getPj_id" resultType="Map">
+        select id,project_id  projectId from projects
+    </select>
+
+    <update id="updateTarget">
+         update project_target pt
+        left  join employee em on pt.job_no = em.job_no
+        join (select  GROUP_CONCAT(project_id) complete , member_email,nntid,close_date from project_detail GROUP BY  close_date,member_email ,nntid having    close_date is not Null) pd on em.email = pd.member_email or  em.job_no = pd.nntid set  pt.state = 1 ,pt.complet_project = pd.complete
+        where
+          case  when em.cost_category = 'IL' and date_format(pt.target_date,'%Y-%m-%d') = date_format(date_sub(pd.close_date,INTERVAL WEEKDAY(pd.close_date) + 0 DAY),'%Y-%m-%d') then 1=1
+	      when em.cost_category = 'DL' and date_format(pt.target_date,'%Y-%m-%d') = date_format(pd.close_date,'%Y-%m-%15') then 1=1 else 1=2 end
+    </update>
+
+    <select id="queryStateRate" parameterType="Map" resultType="Map">
+        select  state name ,count(*) value  from (select state from projects where 1=1
+        <if test="start != null and start != ''">
+            and close_date >= #{start}
+        </if>
+        <if test="start == null or start == ''">
+            and close_date >= date_format(curdate(),'%Y-%6-%16 00:00:00')
+        </if>
+        <if test="end != null and end != ''">
+            and close_date &lt;= #{end}
+        </if>
+        <if test="end == null or end == ''">
+            and close_date &lt;= date_format(DATE_ADD(curdate(), INTERVAL 1 YEAR),'%Y-%6-%16 00:00:00')
+        </if>
+        ) pd  GROUP BY state
+    </select>
+    <select id="queryTypeRate" parameterType="Map" resultType="Map">
+        select  project_type name ,count(*) value   from (select project_type from projects where 1=1
+        <if test="start != null and start != ''">
+        and close_date >= #{start}
+        </if>
+        <if test="start == null or start == ''">
+            and close_date >= date_format(curdate(),'%Y-%6-%16 00:00:00')
+        </if>
+        <if test="end != null and end != ''">
+            and close_date &lt;= #{end}
+        </if>
+        <if test="end == null or end == ''">
+            and close_date &lt;= date_format(DATE_ADD(curdate(), INTERVAL 1 YEAR),'%Y-%6-%16 00:00:00')
+        </if>
+        ) pd GROUP BY project_type
+    </select>
+
+    <select id="queryLCount" parameterType="Map" resultType="Map">
+        select count(*) terget,SUM(cont) num from 	(select  Get_StrArrayLength(complet_project,',') cont  from project_target pt,	(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(pt.job_no, em.jno )
+        <if test="start != null and start != ''">
+            and pt.close_date >= #{start}
+        </if>
+        <if test="start == null or start == ''">
+            and pt.close_date >= date_format(curdate(),'%Y-%6-%16 00:00:00')
+        </if>
+        <if test="end != null and end != ''">
+            and pt.close_date &lt;= #{end}
+        </if>
+        <if test="end == null or end == ''">
+            and pt.close_date &lt;= date_format(DATE_ADD(curdate(), INTERVAL 1 YEAR),'%Y-%6-%16 00:00:00')
+        </if>
+         and  pt.cost_category = #{costCategory})  cmpt
+    </select>
+
+    <select id="queryTop" parameterType="Map" resultType="Map">
+       select job_no jobNo,email,name,director,count(*) count from (select * from (select  job_no,email ,name , director  from employee where active = 1 and cost_category=#{costCategory} and email != '') emp
+       left join (select project_id,member_email,nntid from project_detail where  close_7447date is not null
+        <if test="start != null and start != ''">
+            and close_date >= #{start}
+        </if>
+        <if test="start == null or start == ''">
+            and close_date >= date_format(curdate(),'%Y-%6-%16 00:00:00')
+        </if>
+        <if test="end != null and end != ''">
+            and close_date &lt;= #{end}
+        </if>0
+        <if test="end == null or end == ''">
+            and close_date &lt;= date_format(DATE_ADD(curdate(
+
+            ), INTERVAL 1 YEAR),'%Y-%6-%16 00:00:00')
+        </if>
+       ) pd on emp.email = pd.member_email or emp.job_no = pd.nntid ) apm GROUP BY jobNo,email,name,director  order by count desc limit 10
+    </select>
+
+    <select id="queryProject" parameterType="Map" resultType="Map">
+        select em.job_no jobNo,em.email,em.name,em.director,em.department,em.position,em.line_type lineType,sp.project_id projectId,sp.project_name projectName ,sp.project_type projectType ,sp.state ,
+         (case when sp.leader_email = em.email then  'leader'  else 'member' end)  role
+        from employee em, (SELECT project_id,project_name,project_type, state,leader_email,concat(leader_email,',',member_email) emails,nntid FROM projects where project_id = #{projectId}) sp  where  (FIND_IN_SET(em.email, sp.emails)   or em.job_no = sp.nntid)  and  em.email  != ''
+    </select>
+    <select id="empPeoList" parameterType="Map" resultType="Map">
+        select pt.id,pt.project_id projectId ,pt.project_name projectName,pt.project_type projectType,pt.state ,pt.lsc_date lscDate,pt.submit_date submitDate,pt.submit_email submitEmail,pt.process_improve  processImprove,
+            pt.process_email processEmail,pt.team_leader teamLeader,pt.leader_email leaderEmail,pt.team_member teamMember,pt.member_email memberEmail,pt.customer_field  customerField,pt.close_date closeDate ,pt.nntid
+              from projects pt, employee em  where em.job_no = #{jobNo}  and  (((FIND_IN_SET(em.email,pt.member_email)  or em.email = pt.leader_email) and  em.email != '') or em.job_no = pt.nntid)
+              order by pt.close_date desc   limit #{pageOffset},#{rows}
+    </select>
+    <select id="empPeoCount" parameterType="Map" resultType="int">
+        select count(*) from projects pt, employee em  where em.job_no = #{jobNo}  and  (((FIND_IN_SET(em.email,pt.member_email)  or em.email = pt.leader_email) and em.email != '') or em.job_no = pt.nntid)
+    </select>
+</mapper>

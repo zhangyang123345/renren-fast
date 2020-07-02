@@ -55,4 +55,25 @@ public interface AnsowerDao extends BaseMapper<AnsowerEntity> {
      * @return
      */
     public List<Map<String,Object>> getAllExam(Map<String,Object> params);
+
+    /**
+     * 获取各主管下员工数据《统计》
+     * @param params
+     * @return
+     */
+    public Map examDataByDirector(Map<String, Object> params);
+    /**
+     * 获取各主管下员工数据《统计》
+     * @param params
+     * @return
+     */
+    public Map examHisData(Map<String, Object> params);
+
+    /**
+     * 临时表
+     * @param params
+     * @return
+     */
+    public Boolean createTemp(Map<String, Object> params);
+    public Boolean cleaTemp();
 }

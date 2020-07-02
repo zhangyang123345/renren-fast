@@ -24,18 +24,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, QuestionEntity
     public Map<String,Object> searchList(Map<String, Object> params) {
         Map<String, Object> data = new HashMap<>();
         String dTime = params.get("keytime")!=null?params.get("keytime").toString():"";
-        int total = baseMapper.searchListCount(params);
         int rows = params.get("rows") != null ? Integer.parseInt(params.get("rows").toString()): 10;
         int page = params.get("page") != null ? Integer.parseInt(params.get("page").toString()) : 1;
         int pageOffset = rows*(page - 1);
-        if(params.get("rows")!=null) params.put("rows", Integer.parseInt(params.get("rows").toString()));
-        if(params.get("page")!=null) params.put("page", Integer.parseInt(params.get("page").toString()));
-        if(params.get("rows")==null) params.put("rows", 10);
-        if(params.get("page")==null) params.put("page", 1);
+        params.put("rows", rows);
+        params.put("page", page);
         if(StringUtils.isNotBlank(dTime) && !"null".equals(dTime)){
             params.put("sdate", dTime.split(",")[0]);
             params.put("edate", dTime.split(",")[1]);
         }
+        int total = baseMapper.searchListCount(params);
         params.put("pageOffset",pageOffset);
         data.put("list",baseMapper.searchList(params));
         data.put("total", total);

@@ -28,18 +28,16 @@ public class AnsowerServiceImpl extends ServiceImpl<AnsowerDao, AnsowerEntity> i
     public Map<String, Object> searchList(Map<String, Object> params) {
         Map<String, Object> data = new HashMap<>();
         String dTime = params.get("keytime")!=null?params.get("keytime").toString():"";
-        int total = baseMapper.searchCount(params);
-        int rows = params.get("rows") != null ? Integer.parseInt(params.get("rows").toString()): 10;
-        int page = params.get("page") != null ? Integer.parseInt(params.get("page").toString()) : 1;
-        int pageOffset = rows*(page - 1);
-        if(params.get("rows")!=null) params.put("rows", Integer.parseInt(params.get("rows").toString()));
-        if(params.get("page")!=null) params.put("page", Integer.parseInt(params.get("page").toString()));
-        if(params.get("rows")==null) params.put("rows", 10);
-        if(params.get("page")==null) params.put("page", 1);
         if(StringUtils.isNotBlank(dTime) && !"null".equals(dTime)){
             params.put("sdate", dTime.split(",")[0]);
             params.put("edate", dTime.split(",")[1]);
         }
+        int total = baseMapper.searchCount(params);
+        int rows = params.get("rows") != null ? Integer.parseInt(params.get("rows").toString()): 10;
+        int page = params.get("page") != null ? Integer.parseInt(params.get("page").toString()) : 1;
+        int pageOffset = rows*(page - 1);
+        params.put("rows", rows);
+        params.put("page", page);
         params.put("pageOffset",pageOffset);
         data.put("list",baseMapper.searchList(params));
         data.put("total", total);
@@ -71,10 +69,8 @@ public class AnsowerServiceImpl extends ServiceImpl<AnsowerDao, AnsowerEntity> i
         int rows = params.get("rows") != null ? Integer.parseInt(params.get("rows").toString()): 10;
         int page = params.get("page") != null ? Integer.parseInt(params.get("page").toString()) : 1;
         int pageOffset = rows*(page - 1);
-        if(params.get("rows")!=null) params.put("rows", Integer.parseInt(params.get("rows").toString()));
-        if(params.get("page")!=null) params.put("page", Integer.parseInt(params.get("page").toString()));
-        if(params.get("rows")==null) params.put("rows", 10);
-        if(params.get("page")==null) params.put("page", 1);
+        params.put("rows", rows);
+        params.put("page", page);
         params.put("pageOffset",pageOffset);
 //        data.put("list",baseMapper.searchList(params));
 //        data.put("total", total);
@@ -110,15 +106,31 @@ public class AnsowerServiceImpl extends ServiceImpl<AnsowerDao, AnsowerEntity> i
      */
     @Override
     public Map examDataByDirector( Map<String,Object> params) {
-        Map<String, Object> data = new HashMap<>();
-        int unExamCount = unexampepolService.searchCountByDirector(params);//未参考人数
-        int examCount   = baseMapper.searchCountByDirector(params); //参考人数
-        int qualified = baseMapper.queryQualified(params); //合格人数
-        int total = unExamCount + examCount;  //总人数
-        data.put("unExamCount", unExamCount);
-        data.put("examCount", examCount);
-        data.put("qualified", qualified);
-        data.put("total", total);
+//        Map<String, Object> data = new HashMap<>();
+//        int unExamCount = unexampepolService.searchCountByDirector(params);//未参考人数
+//        int examCount   = baseMapper.searchCountByDirector(params); //参考人数
+//        int qualified = baseMapper.queryQualified(params); //合格人数
+//        int total = unExamCount + examCount;  //总人数
+//        data.put("unExamCount", unExamCount);
+//        data.put("examCount", examCount);
+//        data.put("qualified", qualified);
+//        data.put("total", total);
+//        return data;
+//        baseMapper.cleaTemp();
+//        baseMapper.createTemp(params);
+        Map data = baseMapper.examDataByDirector(params);
+//        baseMapper.cleaTemp();
+        return data;
+    }
+
+    /**
+     * 获取各主管下员工数据《统计》
+     * @param params
+     * @return
+     */
+    @Override
+    public Map examHisData( Map<String,Object> params) {
+        Map data = baseMapper.examHisData(params);
         return data;
     }
 

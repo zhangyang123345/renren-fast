@@ -60,10 +60,10 @@
             and  p.line_type = #{lineType}
         </if>
         <if test=" entryDateStart!= null and entryDateStart != ''">
-            and  to_char(p.entry_date ,'yyyy-mm-dd') >= #{entryDateStart}
+            and  p.entry_date >= #{entryDateStart}
         </if>
         <if test=" entryDateEnd!= null and entryDateEnd != ''">
-            and  to_char(p.entry_date ,'yyyy-mm-dd') &lt;= #{entryDateEnd}
+            and  p.entry_date  &lt;= #{entryDateEnd}
         </if>
         <if test="active != null and active != ''">
           and p.active = #{active}
