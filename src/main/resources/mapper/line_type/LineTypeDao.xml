@@ -7,10 +7,11 @@
         <result property="id" column="ID"/>
         <result property="lien_type" column="LINE_TYPE"/>
     </resultMap>
-
-
     <select id="searchList" parameterType="Map" resultType="Map">
-        select id,line_type lineType from  line_type
+        select lty.id,lty.line_type lineType from  line_type lty ,separtment  sep where sep.separtment = lty.separtment
+        <if test=" name != null and name != ''">
+            and  sep.name = #{name}
+        </if>
         order by id
     </select>
     <update id="deleteLine" parameterType="Map" >

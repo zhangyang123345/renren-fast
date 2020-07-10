@@ -12,7 +12,7 @@ public interface LineTypeService extends IService<LineTypeEntity> {
      * 查询所有线别类型
      * @return
      */
-    public List<Map> search();
+    public List<Map> search( Map<String ,Object> params);
 
     /**
      * 添加新的线别类型

@@ -1,7 +1,6 @@
 package io.renren.modules.lien_type.service.Impl;
 
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.renren.modules.lien_type.dao.LineTypeDao;
 import io.renren.modules.lien_type.entity.LineTypeEntity;
@@ -19,8 +18,8 @@ public class LineTypeServiceImpl extends ServiceImpl<LineTypeDao, LineTypeEntity
      * @return
      */
     @Override
-    public List<Map> search() {
-        return baseMapper.searchList();
+    public List<Map> search( Map<String ,Object> params) {
+        return baseMapper.searchList(params);
     }
 
     /**

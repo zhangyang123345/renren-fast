@@ -1,16 +1,11 @@
 package io.renren.common.utils;
 
-import org.apache.poi.hpsf.DocumentSummaryInformation;
-import org.apache.poi.hpsf.SummaryInformation;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -19,7 +14,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PoiUtils {
@@ -218,6 +212,8 @@ public class PoiUtils {
 
         // 2. 公式 CELL_TYPE_FORMULA
         if (cell.getCellTypeEnum() == CellType.FORMULA) {
+            cell.setCellType(CellType.STRING);
+            System.out.println("---------------------->"+cell.getStringCellValue());
             return cell.getStringCellValue();
         }
 

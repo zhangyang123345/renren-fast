@@ -14,7 +14,7 @@ public interface LineTypeDao extends BaseMapper<LineTypeEntity> {
      * 查询线别
      * @return
      */
-    public List<Map> searchList();
+    public List<Map> searchList( Map<String ,Object> params);
 
     /**
      * 新增线别类型

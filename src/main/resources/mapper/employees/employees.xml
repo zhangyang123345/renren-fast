@@ -148,7 +148,8 @@
     </update>
 
     <update id="updateDirector">
-        update employee e left join employee p on  p.name = e.pj_name  set  e.pj_no = p.job_no
+        update employee e left join employee p on  p.name = e.pj_name  set  e.pj_no = p.job_no ;
+        update employee emp ,separtment ln set emp.separtment = ln.separtment where FIND_IN_SET(emp.director , ln.director);
     </update>
     <select id="getJobNo" resultType="Map">
         select job_no jobNo ,id from employee

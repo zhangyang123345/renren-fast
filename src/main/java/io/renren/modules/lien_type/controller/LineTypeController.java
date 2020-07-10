@@ -4,10 +4,7 @@ package io.renren.modules.lien_type.controller;
 import io.renren.common.utils.R;
 import io.renren.modules.lien_type.service.LineTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,8 +22,8 @@ public class LineTypeController {
      */
     @ResponseBody
     @PostMapping("/search")
-    public R searchList() {
-        List<Map> data =  lineTypeService.search();
+    public R searchList(@RequestParam Map<String ,Object> params) {
+        List<Map> data =  lineTypeService.search(params);
         return R.ok().put("data",data);
     }
     /**
