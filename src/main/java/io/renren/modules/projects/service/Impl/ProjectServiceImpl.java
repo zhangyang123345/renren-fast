@@ -141,7 +141,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectDao, ProjectEntity> i
             params.put("start", dTime.split(",")[0]);
             params.put("end", dTime.split(",")[1]);
         }
-        return baseMapper.queryTop(params);
+
+        if("IL".equals(params.get("costCategory").toString()))return baseMapper.queryTop(params);
+        else return baseMapper.queryDTop(params);
     }
 
     /**

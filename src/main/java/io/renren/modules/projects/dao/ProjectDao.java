@@ -68,11 +68,17 @@ public interface ProjectDao extends BaseMapper<ProjectEntity> {
     public List<Map> queryDCount(Map<String, Object> params);
 
     /**
-     * 查询Top10 人员
+     * 查询Top10 人员 IL
      * @param params
      * @return
      */
     public List<Map> queryTop(Map<String, Object> params);
+    /**
+     * 查询Top10 人员 DL
+     * @param params
+     * @return
+     */
+    public List<Map> queryDTop(Map<String, Object> params);
 
     /**
      * 查询案件数量及类型比例

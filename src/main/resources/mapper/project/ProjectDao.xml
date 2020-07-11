@@ -83,7 +83,7 @@
                 and  pd.target_date &lt;= #{end}
             </if>
         )  target,
-        (select count/target) rate from employee e  where e.active = 1
+        (select count/target) rate from employee e  where e.active = 1 and e.position not like 'Operator%'
 
         <if test=" jobNo!=null and jobNo != ''">
             and e.job_no  like  CONCAT('',#{jobNo},'%')
@@ -191,7 +191,7 @@
             and  pd.target_date &lt;= #{end}
         </if>
         )  target,
-        (select count/target) rate from employee e  where e.active = 1
+        (select count/target) rate from employee e  where e.active = 1 and e.position not like 'Operator%'
 
         <if test=" jobNo!=null and jobNo != ''">
             and e.job_no  like  CONCAT('',#{jobNo},'%')
@@ -220,7 +220,7 @@
         order by e.id asc
     </select>
     <select id="searchListCount" parameterType="Map" resultType="int">
-        select count(*) from employee p  where active = 1
+        select count(*) from employee p  where active = 1 and p.position not like 'Operator%'
         <if test=" jobNo!=null and jobNo != ''">
             and p.job_no  like  CONCAT('',#{jobNo},'%')
         </if>
@@ -482,6 +482,35 @@
             </if>
         </if>
        ) pd on emp.email = pd.member_email or emp.job_no = pd.nntid ) apm GROUP BY jobNo,email,name,director  order by count desc limit 10
+    </select>
+    <select id="queryDTop" parameterType="Map" resultType="Map">
+        select job_no jobNo,email,name,director,count(*) count from (select * from (select  job_no,email ,name , director  from employee where active = 1 and cost_category=#{costCategory} and email != '') emp
+        left join (select project_id,member_email,nntid from project_detail where  close_date is not null
+        <if test="start != null and start != ''">
+            and close_date >= concat(#{start},'-01')
+        </if>
+        <if test="start == null or start == ''">
+            <if test="costCategory == IL">
+                and  close_date >= date_format(date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 9 DAY),'%Y-%m-%d')
+            </if>
+            <if test="costCategory == DL">
+                and  close_date >= case when now() > date_format(curdate(),'%Y-%m-16')  then   date_format(curdate(),'%Y-%m-16')
+                else   date_format(date_sub(NOW(), interval 1 MONTH),'%Y-%m-16')  end
+            </if>
+        </if>
+        <if test="end != null and end != ''">
+            and close_date &lt;= date_format(last_day(concat(#{start},'-01')),'%Y-%m-%d')
+        </if>
+        <if test="end == null or end == ''">
+            <if test="costCategory == IL">
+                and  close_date &lt;= date_format(date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 3 DAY),'%Y-%m-%d')
+            </if>
+            <if test="costCategory == DL">
+                and  close_date &lt;= case when now() &lt; date_format(curdate(),'%Y-%m-15')  then   date_format(curdate(),'%Y-%m-15')
+                else   date_format(date_add(NOW(), interval 1 MONTH),'%Y-%m-15')  end
+            </if>
+        </if>
+        ) pd on emp.email = pd.member_email or emp.job_no = pd.nntid ) apm GROUP BY jobNo,email,name,director  order by count desc limit 10
     </select>
 
     <select id="queryProject" parameterType="Map" resultType="Map">
