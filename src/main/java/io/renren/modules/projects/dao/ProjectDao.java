@@ -55,11 +55,17 @@ public interface ProjectDao extends BaseMapper<ProjectEntity> {
     public boolean updateTarget();
 
     /**
-     * 获取阶段完成数量及目标 BY  director
+     * 获取阶段完成数量及目标 BY  director  IL
      * @param params
      * @return
      */
     public List<Map> queryLCount(Map<String, Object> params);
+    /**
+     * 获取阶段完成数量及目标 BY  director  DL
+     * @param params
+     * @return
+     */
+    public List<Map> queryDCount(Map<String, Object> params);
 
     /**
      * 查询Top10 人员

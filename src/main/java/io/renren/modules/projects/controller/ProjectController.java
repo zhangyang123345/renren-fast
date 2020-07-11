@@ -333,7 +333,7 @@ public class ProjectController {
      */
     @ResponseBody
     @PostMapping("/moneyRate")
-    public R moneyRate(Map<String, Object> params) {
+    public R moneyRate(@RequestParam Map<String, Object> params) {
         return R.ok().put("list", projectService.moneyRate(params));
     }
 
@@ -344,7 +344,7 @@ public class ProjectController {
      */
     @ResponseBody
     @PostMapping("/impactRate")
-    public R impactRate(Map<String, Object> params) {
+    public R impactRate(@RequestParam Map<String, Object> params) {
         return R.ok().put("list", projectService.impactRate(params));
     }
 

@@ -396,11 +396,39 @@
         </if>
         ) pd GROUP BY project_type
     </select>
+    <select id="queryDCount" parameterType="Map" resultType="Map">
+        select count(*) target,SUM(cont) num,job_no jobNo,name from  separtment lty left join (select  Get_StrArrayLength(complet_project,',') as cont ,separtment  from project_target pt where 1=1
+        <if test="start != null and start != ''">
+            and pt.target_date >= concat(#{start},'-01')
+        </if>
+        <if test="start == null or start == ''">
+            <if test="costCategory == IL">
+                and  pt.target_date >= date_format(date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 9 DAY),'%Y-%m-%d')
+            </if>
+            <if test="costCategory == DL">
+                and  pt.target_date >= case when now() > date_format(curdate(),'%Y-%m-16')  then   date_format(curdate(),'%Y-%m-16')
+                else   date_format(date_sub(NOW(), interval 1 MONTH),'%Y-%m-16')  end
+            </if>
+        </if>
+        <if test="end != null and end != ''">
+            and pt.target_date &lt;= date_format(last_day(concat(#{start},'-01')),'%Y-%m-%d')
+        </if>
+        <if test="end == null or end == ''">
+            <if test="costCategory == IL">
+                and  pt.target_date &lt;= date_format(date_sub(curdate(),INTERVAL WEEKDAY(curdate()) + 3 DAY),'%Y-%m-%d')
+            </if>
+            <if test="costCategory == DL">
+                and  pt.target_date &lt;= case when now() &lt; date_format(curdate(),'%Y-%m-15')  then   date_format(curdate(),'%Y-%m-15')
+                else   date_format(date_add(NOW(), interval 1 MONTH),'%Y-%m-15')  end
+            </if>
+        </if>
+        and  pt.cost_category = #{costCategory})  cmpt on lty.separtment = cmpt.separtment group by lty.job_no ,name order by num desc
+    </select>
 
     <select id="queryLCount" parameterType="Map" resultType="Map">
         select count(*) target,SUM(cont) num,job_no jobNo,name from  separtment lty left join (select  Get_StrArrayLength(complet_project,',') as cont ,separtment  from project_target pt where 1=1
         <if test="start != null and start != ''">
-            and pt.target_date >= #{start}
+            and pt.target_date >= date_format(date_sub(#{start},INTERVAL WEEKDAY(#{start}) + 0 DAY),'%Y-%m-%d')
         </if>
         <if test="start == null or start == ''">
             <if test="costCategory == IL">
@@ -412,7 +440,7 @@
             </if>
         </if>
         <if test="end != null and end != ''">
-            and pt.target_date &lt;= #{end}
+            and pt.target_date &lt;= date_format(date_sub(#{end},INTERVAL WEEKDAY(#{end}) -6 DAY),'%Y-%m-%d')
         </if>
         <if test="end == null or end == ''">
             <if test="costCategory == IL">

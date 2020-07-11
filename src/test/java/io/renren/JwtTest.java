@@ -11,14 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
 @RunWith(SpringRunner.class)
@@ -50,15 +46,15 @@ public class JwtTest {
     private UnexampepolService unexampepolService;
 
     private MockMvc mockmvc;
-//    @Test
-//    public void test() {
-//        for (int i = 0; i < 80; i++) {
-//            System.out.println("insert into project_target(job_no,cost_category,target_date,separtment)(select job_no,cost_category,date_format(date_sub('2019-01-07',INTERVAL -"+7*i+" DAY),'%Y-%m-%d') target_date,separtment   from employee where  cost_category = 'IL'  and active = 1) ;");
-//        }
-//        for (int i = 0; i < 20; i++) {
-//            System.out.println("insert into project_target(job_no,cost_category,target_date,separtment)(select job_no,cost_category,date_format(date_sub('2019-01-16',INTERVAL -"+i+" MONTH),'%Y-%m-%16') target_date,separtment   from employee where  cost_category = 'DL'  and active = 1) ;");
-//        }
-//    }
+    @Test
+    public void test() {
+        for (int i = 0; i < 80; i++) {
+            System.out.println("insert into project_target(job_no,cost_category,target_date,separtment)(select job_no,cost_category,date_format(date_sub('2019-01-07',INTERVAL -"+7*i+" DAY),'%Y-%m-%d') target_date,separtment   from employee where  cost_category = 'IL' and position not like 'Operator%'  and active = 1) ;");
+        }
+        for (int i = 0; i < 20; i++) {
+            System.out.println("insert into project_target(job_no,cost_category,target_date,separtment)(select job_no,cost_category,date_format(date_sub('2019-01-16',INTERVAL -"+i+" MONTH),'%Y-%m-%16') target_date,separtment   from employee where  cost_category = 'DL' and position not like 'Operator%'  and active = 1) ;");
+        }
+    }
 
     /**上传数据测试*/
     @Test
@@ -85,12 +81,12 @@ public class JwtTest {
 //        paper.setPosition("工程师I");
 //        Map<String,Object> params = new HashMap();
 //        params.put("name","岳平");
-        MvcResult result = mockmvc.perform(
-                post("/project/listAll")
-                        .contentType(MediaType.valueOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
-        )//.content(JSON.toJSONString(params)))
-         .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
+//        MvcResult result = mockmvc.perform(
+//                post("/project/listAll")
+//                        .contentType(MediaType.valueOf(MediaType.APPLICATION_JSON_UTF8_VALUE))
+//        )//.content(JSON.toJSONString(params)))
+//         .andReturn();
+//        System.out.println(result.getResponse().getContentAsString());
 
 //        unexampepolService.updateUnexam(paper);
 

@@ -109,19 +109,23 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectDao, ProjectEntity> i
      */
     @Override
     public List<Map> queryLCount(Map<String, Object> params) {
-        List<Map> data = baseMapper.queryLCount(params);
-        Map xiao = new HashMap();
-        xiao.put("name", "PVD厂");
-        xiao.put("jobNo", 451692);
-        int target = 0 ;
-        int count = 0 ;
-        for (Map mp : data) {
-            target += (mp.get("target") != null ?Integer.parseInt(mp.get("target").toString()):0);
-            count += (mp.get("num") != null ?Integer.parseInt(mp.get("num").toString()):0);
+        List<Map> data = null ;
+        if("IL".equals(params.get("costCategory").toString()))data = baseMapper.queryLCount(params);
+        else data = baseMapper.queryDCount(params);
+        if(data != null) {
+            Map xiao = new HashMap();
+            xiao.put("name", "PVD厂");
+            xiao.put("jobNo", 451692);
+            int target = 0;
+            int count = 0;
+            for (Map mp : data) {
+                target += (mp.get("target") != null ? Integer.parseInt(mp.get("target").toString()) : 0);
+                count += (mp.get("num") != null ? Integer.parseInt(mp.get("num").toString()) : 0);
+            }
+            xiao.put("target", target);
+            xiao.put("num", count);
+            data.add(0, xiao);
         }
-        xiao.put("target", target);
-        xiao.put("num", count);
-        data.add(0,xiao);
         return data;
     }
 
