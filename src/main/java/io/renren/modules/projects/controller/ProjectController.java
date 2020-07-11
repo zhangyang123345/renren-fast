@@ -187,42 +187,66 @@ public class ProjectController {
                             detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
                         insDList.add(detailEntity);
                     } else if ("A3".equals(mp.get("Project Type").toString())){
+                        ProjectDetailEntity nntid = null ;
+                        ProjectDetailEntity leader = null ;
+                        ProjectDetailEntity member1 = null ;
+                        ProjectDetailEntity member2 = null ;
+                        int numb = 1 ;
+
                         //NNTID
-                        int membIndex = 2 ;
                         if(nid != null && !"".equals(nid)){
-                            membIndex = 1 ;
-                            ProjectDetailEntity detailEntity = new ProjectDetailEntity();
-                            detailEntity.setProject_id(projectId);
-                            detailEntity.setMember_email("");
-                            detailEntity.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            detailEntity.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            detailEntity.setNntid(Integer.parseInt(nid));
-                            if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString()))
-                                detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
-                            insDList.add(detailEntity);
+                            numb ++ ;
+                            nntid = new ProjectDetailEntity();
+                            nntid.setProject_id(projectId);
+                            nntid.setMember_email("");
+                            nntid.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                            nntid.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            nntid.setNntid(Integer.parseInt(nid));
                         }
                         //Team leader
-                        ProjectDetailEntity detailEntity = new ProjectDetailEntity();
-                        detailEntity.setProject_id(projectId);
-                        detailEntity.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                        detailEntity.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                        detailEntity.setMember_email(mp.get("Team Leader Email").toString());
-                        if (mp.get("Estimated Hard Savings") != null)
-                            detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.4);
-                        insDList.add(detailEntity);
+                        leader = new ProjectDetailEntity();
+                        leader.setProject_id(projectId);
+                        leader.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                        leader.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                        leader.setMember_email(mp.get("Team Leader Email").toString());
 
-                        //member
-                        for(int i = 1 ;i <= membIndex ;i ++){
-                            detailEntity = new ProjectDetailEntity();
-                            detailEntity.setProject_id(projectId);
-                            detailEntity.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            detailEntity.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            detailEntity.setMember_email(mp.get("Team Member " + i + " Email Address")!=null?mp.get("Team Member " + i++ + " Email Address").toString():"");
-                            if (mp.get("Estimated Hard Savings") != null)
-                                detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
-                            insDList.add(detailEntity);
+                        //member1
+                        if(mp.get("Team Member 1 Email Address") != null && numb <= 2) {
+                            numb ++ ;
+                            member1 = new ProjectDetailEntity();
+                            member1.setProject_id(projectId);
+                            member1.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                            member1.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            member1.setMember_email( mp.get("Team Member 1 Email Address").toString());
                         }
-
+                        //member2
+                        if(mp.get("Team Member 1 Email Address") != null && numb <= 2) {
+                            numb ++ ;
+                            member2 = new ProjectDetailEntity();
+                            member2.setProject_id(projectId);
+                            member2.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                            member2.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            member2.setMember_email( mp.get("Team Member 2 Email Address").toString());
+                        }
+                        if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString())) {
+                            if(numb == 1) {
+                                leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
+                            }else if(numb == 2) {
+                             leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                             if(nntid != null)nntid.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                             if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                             if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                            }else{
+                                leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.4);
+                                if(nntid != null)nntid.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                                if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                                if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                            }
+                        }
+                        if(leader!=null) insDList.add(leader);
+                        if(nntid!=null) insDList.add(nntid);
+                        if(member1!=null) insDList.add(member1);
+                        if(member2!=null) insDList.add(member2);
                     } else {
                         int x = 0 ;
                         ProjectDetailEntity leader = new ProjectDetailEntity();
