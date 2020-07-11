@@ -575,6 +575,6 @@
         <if test="state == null or state == '' or state != 'Closed'">
             p.submit_date
         </if>
-        desc  limit #{pageOffset},#{rows}
+        desc
     </select>
 </mapper>
