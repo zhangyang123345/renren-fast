@@ -413,4 +413,14 @@ public class ProjectController {
     public R  getProcess() {
         return R.ok().put("list", projectService.getProcess());
     }
+
+    /**
+     * 导出案件信息
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/exportCaseMsg")
+    public R exportCaseMsg(@RequestParam Map<String,Object> params) {
+        return R.ok().put("data", projectService.exportCaseMsg(params));
+    }
 }

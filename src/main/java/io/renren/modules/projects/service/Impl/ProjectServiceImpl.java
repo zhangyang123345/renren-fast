@@ -250,5 +250,20 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectDao, ProjectEntity> i
     public List<Map>  getProcess() {
         return baseMapper.getProcess();
     }
+    /**
+     * 导出案件数据
+     * @param params
+     * @return
+     */
+    public Map<String,Object> exportCaseMsg(Map<String,Object> params) {
+        Map<String, Object> data = new HashMap<>();
+        String dTime = params.get("keytime")!=null?params.get("keytime").toString():"";
+        if(StringUtils.isNotBlank(dTime) && !"null".equals(dTime)){
+            params.put("start", dTime.split(",")[0]);
+            params.put("end", dTime.split(",")[1]);
+        }
+        data.put("list",baseMapper.exportCaseMsg(params));
+        return data;
+    }
 }
 

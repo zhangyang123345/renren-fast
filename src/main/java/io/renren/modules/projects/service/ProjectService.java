@@ -101,4 +101,10 @@ public interface ProjectService extends IService<ProjectEntity> {
      * @return
      */
     public List<Map>  getProcess();
+    /**
+     * 导出案件数据
+     * @param params
+     * @return
+     */
+    public Map<String,Object> exportCaseMsg(Map<String,Object> params);
 }

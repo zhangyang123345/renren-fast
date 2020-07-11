@@ -531,4 +531,50 @@
     <select id="getProcess" parameterType="Map" resultType="Map">
         select process_improve processImprove from projects group by process_improve
     </select>
+    <select id="exportCaseMsg" parameterType="Map" resultType="Map">
+        select id,project_id projectId ,project_name projectName,project_type projectType,state ,lsc_date lscDate,submit_date submitDate,submit_email submitEmail,process_improve  processImprove,
+        process_email processEmail,team_leader teamLeader,leader_email leaderEmail,team_member teamMember,member_email memberEmail,customer_field  customerField,close_date closeDate ,nntid,hard_saving hardSaving,impact_on_pl impacOn
+        from projects p where 1=1
+        <if test=" projectId!=null and projectId != ''">
+            and p.project_id  like  CONCAT('',#{projectId},'%')
+        </if>
+        <if test="projectName != null and projectName != ''">
+            and  p.project_name like CONCAT('%',#{projectName},'%')
+        </if>
+        <if test=" projectType!= null and projectType != ''">
+            and  p.project_type = #{projectType}
+        </if>
+        <if test=" customerField!= null and customerField != ''">
+            and  p.customer_field = #{customerField}
+        </if>
+        <if test=" processImprove != null and processImprove != ''">
+            and  p.process_improve = #{processImprove}
+        </if>
+        <if test=" impactOn != null and impactOn != ''">
+            and  FIND_IN_SET(p.impact_on_pl , #{impactOn})
+        </if>
+        <if test=" state!= null and state != ''">
+            and  FIND_IN_SET(p.state , #{state})
+        </if>
+        <if test=" start!= null and start != '' ">
+            and   case when 'Closed' = #{state} then  p.close_date >= #{start}
+            when  !FIND_IN_SET('Closed',#{state}) then  p.submit_date>=#{start}
+            else  (p.close_date >= #{start} or p.submit_date>=#{start})
+            end
+        </if>
+        <if test=" end!= null and end != '' ">
+            and   case when 'Closed' = #{state} then  p.close_date &lt;= #{end}
+            when  !FIND_IN_SET('Closed',#{state}) then  p.submit_date &lt;=#{end}
+            else  (p.close_date &lt;= #{end} or p.submit_date &lt;= #{end})
+            end
+        </if>
+        order by
+        <if test="state != null and state == 'Closed'">
+            p.close_date
+        </if>
+        <if test="state == null or state == '' or state != 'Closed'">
+            p.submit_date
+        </if>
+        desc  limit #{pageOffset},#{rows}
+    </select>
 </mapper>

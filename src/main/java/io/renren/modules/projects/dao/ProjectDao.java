@@ -127,4 +127,11 @@ public interface ProjectDao extends BaseMapper<ProjectEntity> {
      * @return
      */
     public List<Map>  getProcess();
+
+    /**
+     * 导出案件数据
+     * @param params
+     * @return
+     */
+    public List<Map> exportCaseMsg(Map<String,Object> params);
  }
