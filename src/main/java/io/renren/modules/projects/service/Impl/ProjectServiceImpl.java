@@ -267,5 +267,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectDao, ProjectEntity> i
         data.put("list",baseMapper.exportCaseMsg(params));
         return data;
     }
+    /**
+     * 查询人员姓名
+     * @param params
+     * @return
+     */
+    public List<Map> empPeoMsg(String params) {
+        return baseMapper.empPeoMsg(params);
+    }
 }
 

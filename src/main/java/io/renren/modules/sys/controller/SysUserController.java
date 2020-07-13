@@ -16,6 +16,7 @@ import io.renren.common.validator.Assert;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.common.validator.group.AddGroup;
 import io.renren.common.validator.group.UpdateGroup;
+import io.renren.modules.projects.service.ProjectService;
 import io.renren.modules.sys.entity.SysUserEntity;
 import io.renren.modules.sys.form.PasswordForm;
 import io.renren.modules.sys.service.SysUserRoleService;
@@ -26,6 +27,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,8 @@ public class SysUserController extends AbstractController {
 	private SysUserService sysUserService;
 	@Autowired
 	private SysUserRoleService sysUserRoleService;
+	@Autowired
+	private ProjectService projectService;
 
 
 	/**
@@ -63,7 +67,25 @@ public class SysUserController extends AbstractController {
 	 */
 	@GetMapping("/info")
 	public R info(){
-		return R.ok().put("user", getUser());
+		SysUserEntity sysUserEntity1 = getUser();
+		Map sysUserEntity = new HashMap();
+		sysUserEntity.put("userId", sysUserEntity1.getUserId());
+		sysUserEntity.put("username", sysUserEntity1.getUsername());
+		sysUserEntity.put("password", sysUserEntity1.getPassword());
+		sysUserEntity.put("salt", sysUserEntity1.getSalt());
+		sysUserEntity.put("email", sysUserEntity1.getEmail());
+		sysUserEntity.put("mobile", sysUserEntity1.getMobile());
+		sysUserEntity.put("status", sysUserEntity1.getStatus());
+		sysUserEntity.put("roleIdList", sysUserEntity1.getRoleIdList());
+		sysUserEntity.put("createUserId", sysUserEntity1.getCreateUserId());
+		sysUserEntity.put("createTime", sysUserEntity1.getCreateTime());
+		List<Map> list =projectService.empPeoMsg(sysUserEntity1.getUsername());
+		if(list.size()>0){
+			sysUserEntity.put("realname", list.get(0).get("name"));
+		}else {
+			sysUserEntity.put("realname", sysUserEntity1.getUsername());
+		}
+		return R.ok().put("user", sysUserEntity);
 	}
 	
 	/**

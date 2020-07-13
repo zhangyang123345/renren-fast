@@ -140,4 +140,10 @@ public interface ProjectDao extends BaseMapper<ProjectEntity> {
      * @return
      */
     public List<Map> exportCaseMsg(Map<String,Object> params);
+    /**
+     * 查询人员姓名
+     * @param params
+     * @return
+     */
+    public List<Map> empPeoMsg(String params);
  }

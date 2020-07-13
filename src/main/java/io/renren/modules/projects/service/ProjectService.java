@@ -107,4 +107,10 @@ public interface ProjectService extends IService<ProjectEntity> {
      * @return
      */
     public Map<String,Object> exportCaseMsg(Map<String,Object> params);
+    /**
+     * 查询个人姓名 By  employee
+     * @param parmas
+     * @return
+     */
+    public List<Map> empPeoMsg(String parmas);
 }

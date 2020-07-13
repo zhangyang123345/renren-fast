@@ -518,6 +518,9 @@
          (case when sp.leader_email = em.email then  'leader'  else 'member' end)  role
         from employee em, (SELECT project_id,project_name,project_type, state,leader_email,concat(leader_email,',',member_email) emails,nntid FROM projects where project_id = #{projectId}) sp  where  (FIND_IN_SET(em.email, sp.emails)   or em.job_no = sp.nntid)  and  em.email  != ''
     </select>
+    <select id="empPeoMsg" parameterType="java.lang.String" resultType="Map">
+         select name from employee  where job_no = #{jobNo}
+    </select>
     <select id="empPeoList" parameterType="Map" resultType="Map">
         select pt.id,pt.project_id projectId ,pt.project_name projectName,pt.project_type projectType,pt.state ,pt.lsc_date lscDate,pt.submit_date submitDate,pt.submit_email submitEmail,pt.process_improve  processImprove,
             pt.process_email processEmail,pt.team_leader teamLeader,pt.leader_email leaderEmail,pt.team_member teamMember,pt.member_email memberEmail,pt.customer_field  customerField,pt.close_date closeDate ,pt.nntid,pt.hard_saving hardSaving
