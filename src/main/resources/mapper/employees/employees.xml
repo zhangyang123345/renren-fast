@@ -157,4 +157,11 @@
     <select id="getWorkEmpl" parameterType="Map" resultType="Map">
         select job_no jobNo,id,name from employee  where pj_no = #{jobNo} or job_no = #{jobNo}
     </select>
+    <update id="upEmail" parameterType="java.util.List">
+        update employee ems  set  ems.email =  case
+        <foreach collection="list" item="item" index="index">
+            when ems.job_no = ${item.jobNo}  then #{item.email}
+        </foreach>
+        else '' end 
+    </update>
 </mapper>

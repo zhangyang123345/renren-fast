@@ -118,4 +118,12 @@ public class EmployeesServiceImpl extends ServiceImpl<EmployeesDao, EmployeesEnt
     public List<Map<String,Object>> getWorkEmpl(Map params) {
         return baseMapper.getWorkEmpl(params);
     }
+    /**
+     * 更新邮箱
+     * @param params
+     * @return
+     */
+    public Boolean upEmail(List<Map> params) {
+        return baseMapper.upEmail(params);
+    }
 }

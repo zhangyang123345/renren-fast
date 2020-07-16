@@ -53,7 +53,7 @@ public class ProjectController {
      */
     @ResponseBody
     @PostMapping("/listAll")
-    public R listAll(Map<String,Object> params) {
+    public R listAll(@RequestParam  Map<String,Object> params) {
         List<Map> list = projectService.listAll(params);
 //        //排序
 //        Double[] soruce = new Double[list.size()];
@@ -128,45 +128,34 @@ public class ProjectController {
                 project.setImpact_on_PL(mp.get("Impact on P&L").toString());
                 if(mp.get("Estimated Hard Savings") !=null)project.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
                 if(mp.get("Closed Date")!=null)project.setClose_date(mp.get("Closed Date").toString());
-                String nid = "";
+                String nids = "";
                 if(mp.get("Non NT ID Team Member 1") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 1").toString()) ) {
-                    nid = compile.matcher(mp.get("Non NT ID Team Member 1").toString().split("\\.")[0]).replaceAll("");
-                    if(nid.length()>8) nid = "";
+                   String nid = compile.matcher(mp.get("Non NT ID Team Member 1").toString().split("\\.")[0]).replaceAll("");
+                    if(nid.length()>12) nid = "";
+                    if(nid!="")nids += nid ;
                 }
-                if(nid != null &&  !"".equals(nid))project.setNntid(Integer.parseInt(nid));
-
-
-                if("Blize".equals(mp.get("Project Type").toString())) {
-
-                }else if ("A3".equals(mp.get("Project Type").toString())){
-                    int endx = (nid != null && !"".equals(nid))? 1 : 2;
-
-                    String teamMember = "";
-                    String memberEmail = "";
-                    int membIndex = 1;
-                    while (mp.get("Team Member " + membIndex) != null && StringUtils.isNotEmpty(mp.get("Team Member " + membIndex).toString()) && membIndex <= endx ) {
-                        teamMember += mp.get("Team Member " + membIndex).toString() + ",";
-                        memberEmail += mp.get("Team Member " + membIndex++ + " Email Address").toString() + ",";
-                    }
-                    if (teamMember.length() > 1) teamMember = teamMember.substring(0, teamMember.length() - 1);
-                    if (memberEmail.length() > 1) memberEmail = memberEmail.substring(0, memberEmail.length() - 1);
-
-                    project.setTeam_member(teamMember);
-                    project.setMember_email(memberEmail);
-                } else {
-                    String teamMember = "";
-                    String memberEmail = "";
-                    int membIndex = 1;
-                    while (mp.get("Team Member " + membIndex) != null && StringUtils.isNotEmpty(mp.get("Team Member " + membIndex).toString())  ) {
-                        teamMember += mp.get("Team Member " + membIndex).toString() + ",";
-                        memberEmail += mp.get("Team Member " + membIndex++ + " Email Address").toString() + ",";
-                    }
-                    if (teamMember.length() > 1) teamMember = teamMember.substring(0, teamMember.length() - 1);
-                    if (memberEmail.length() > 1) memberEmail = memberEmail.substring(0, memberEmail.length() - 1);
-
-                    project.setTeam_member(teamMember);
-                    project.setMember_email(memberEmail);
+                if(mp.get("Non NT ID Team Member 2") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 2").toString()) ) {
+                    String nid = compile.matcher(mp.get("Non NT ID Team Member 2").toString().split("\\.")[0]).replaceAll("");
+                    if(nid.length()>12) nid = "";
+                    if(nid!="")nids +=  ","+ nid ;
+                }if(mp.get("Non NT ID Team Member 3") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 3").toString()) ) {
+                    String nid = compile.matcher(mp.get("Non NT ID Team Member 3").toString().split("\\.")[0]).replaceAll("");
+                    if(nid.length()>12) nid = "";
+                    if(nid!="")nids +=  ","+ nid;
                 }
+                if(nids!="") project.setNntid(nids);
+                String teamMember = "";
+                String memberEmail = "";
+                int membIndex = 1;
+                while (mp.get("Team Member " + membIndex) != null && StringUtils.isNotEmpty(mp.get("Team Member " + membIndex).toString())  ) {
+                    teamMember += mp.get("Team Member " + membIndex).toString() + ",";
+                    memberEmail += mp.get("Team Member " + membIndex++ + " Email Address").toString() + ",";
+                }
+                if (teamMember.length() > 1) teamMember = teamMember.substring(0, teamMember.length() - 1);
+                if (memberEmail.length() > 1) memberEmail = memberEmail.substring(0, memberEmail.length() - 1);
+
+                project.setTeam_member(teamMember);
+                project.setMember_email(memberEmail);
                 if (cellKey.containsKey(String.valueOf(projectId))) {
                     project.setId(Integer.parseInt(cellKey.get(String.valueOf(projectId)).toString()));
                     updateList.add(project);
@@ -177,81 +166,95 @@ public class ProjectController {
                         updatDList.add(detail);
                     }
                 } else {
-                    if("Blize".equals(mp.get("Project Type").toString())) {
-                        ProjectDetailEntity detailEntity = new ProjectDetailEntity();
-                        detailEntity.setMember_email(mp.get("Team Leader Email").toString());
-                        detailEntity.setProject_id(projectId);
-                        detailEntity.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                        detailEntity.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                        if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString()))
-                            detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
-                        insDList.add(detailEntity);
-                    } else if ("A3".equals(mp.get("Project Type").toString())){
-                        ProjectDetailEntity nntid = null ;
-                        ProjectDetailEntity leader = null ;
-                        ProjectDetailEntity member1 = null ;
-                        ProjectDetailEntity member2 = null ;
-                        int numb = 1 ;
-
-                        //NNTID
-                        if(nid != null && !"".equals(nid)){
-                            numb ++ ;
-                            nntid = new ProjectDetailEntity();
-                            nntid.setProject_id(projectId);
-                            nntid.setMember_email("");
-                            nntid.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            nntid.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            nntid.setNntid(Integer.parseInt(nid));
-                        }
-                        //Team leader
-                        leader = new ProjectDetailEntity();
-                        leader.setProject_id(projectId);
-                        leader.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                        leader.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                        leader.setMember_email(mp.get("Team Leader Email").toString());
-
-                        //member1
-                        if(mp.get("Team Member 1 Email Address") != null && numb <= 2) {
-                            numb ++ ;
-                            member1 = new ProjectDetailEntity();
-                            member1.setProject_id(projectId);
-                            member1.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            member1.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            member1.setMember_email( mp.get("Team Member 1 Email Address").toString());
-                        }
-                        //member2
-                        if(mp.get("Team Member 1 Email Address") != null && numb <= 2) {
-                            numb ++ ;
-                            member2 = new ProjectDetailEntity();
-                            member2.setProject_id(projectId);
-                            member2.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            member2.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            member2.setMember_email( mp.get("Team Member 2 Email Address").toString());
-                        }
-                        if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString())) {
-                            if(numb == 1) {
-                                leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
-                            }else if(numb == 2) {
-                             leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
-                             if(nntid != null)nntid.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
-                             if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
-                             if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
-                            }else{
-                                leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.4);
-                                if(nntid != null)nntid.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
-                                if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
-                                if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                    if("Blitz".equals(mp.get("Project Type").toString())) {
+                        if(mp.get("Non NT ID Team Member 1") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 1").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 1").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!=""){
+                                ProjectDetailEntity detailEntity = new ProjectDetailEntity();
+                                detailEntity.setNntid(Integer.parseInt(nid));
+                                detailEntity.setProject_id(projectId);
+                                detailEntity.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                detailEntity.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                                if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString()))
+                                    detailEntity.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
+                                insDList.add(detailEntity);
                             }
                         }
-                        if(leader!=null) insDList.add(leader);
-                        if(nntid!=null) insDList.add(nntid);
+                    } else if ("A3".equals(mp.get("Project Type").toString())){
+                        ProjectDetailEntity member1 = null ;
+                        ProjectDetailEntity member2 = null ;
+                        ProjectDetailEntity member3 = null ;
+                        int numb = 0 ;
+                        String nidb = "";
+
+                        if(mp.get("Non NT ID Team Member 1") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 1").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 1").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!=""){
+                                nidb += nid;
+                                numb++;
+                                member1 = new ProjectDetailEntity();
+                                member1.setNntid(Integer.parseInt(nid));
+                                member1.setProject_id(projectId);
+                                member1.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member1.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
+                        }
+                        if(mp.get("Non NT ID Team Member 2") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 2").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 2").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!="" && nidb.indexOf(nid)<0){
+                                nidb+=","+nid;
+                                numb++;
+                                member2 = new ProjectDetailEntity();
+                                member2.setNntid(Integer.parseInt(nid));
+                                member2.setProject_id(projectId);
+                                member2.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member2.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
+                        }
+                        if(mp.get("Non NT ID Team Member 3") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 3").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 3").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!="" && nidb.indexOf(nid)<0){
+                                nidb += "," + nid;
+                                numb++;
+                                member3 = new ProjectDetailEntity();
+                                member3.setNntid(Integer.parseInt(nid));
+                                member3.setProject_id(projectId);
+                                member3.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member3.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
+                        }
+
+                        if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString())) {
+                            if(numb == 1) {
+                                if(member1!=null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
+                                if(member2!=null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
+                                if(member3!=null)member3.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()));
+                            }else if(numb == 2) {
+                             if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                             if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                             if(member3 != null)member3.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.5);
+                            }else{
+                                if(member1 != null)member1.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.4);
+                                if(member2 != null)member2.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                                if(member3 != null)member3.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString())*0.3);
+                            }
+                        }
                         if(member1!=null) insDList.add(member1);
                         if(member2!=null) insDList.add(member2);
+                        if(member3!=null) insDList.add(member3);
                     } else {
-                        int x = 0 ;
                         ProjectDetailEntity leader = new ProjectDetailEntity();
-                        ProjectDetailEntity ninitdi = null;
                         List<ProjectDetailEntity> cache = new ArrayList<>();
+
+                        ProjectDetailEntity member1 = null ;
+                        ProjectDetailEntity member2 = null ;
+                        ProjectDetailEntity member3 = null ;
+                        int numb = 2 ;
+                        String nidt = "";
 
                         //Team leader
                         leader.setProject_id(projectId);
@@ -259,36 +262,73 @@ public class ProjectController {
                         leader.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
                         leader.setMember_email(mp.get("Team Leader Email").toString());
 
-                        x +=3 ;
-                        if(nid != null && !"".equals(nid)){
-                            x++;
-                            ninitdi = new ProjectDetailEntity();
-                            ninitdi.setProject_id(projectId);
-                            ninitdi.setMember_email("");
-                            ninitdi.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
-                            ninitdi.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
-                            ninitdi.setNntid(Integer.parseInt(nid));
+                        //NNTID
+                        if(mp.get("Non NT ID Team Member 1") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 1").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 1").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!=""){
+                                nidt += nid ;
+                                numb++;
+                                member1 = new ProjectDetailEntity();
+                                member1.setNntid(Integer.parseInt(nid));
+                                member1.setProject_id(projectId);
+                                member1.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member1.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
+                        }
+                        if(mp.get("Non NT ID Team Member 2") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 2").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 2").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!="" && nidt.indexOf(nid) <0){
+                                nidt+=","+nid;
+                                numb++;
+                                member2 = new ProjectDetailEntity();
+                                member2.setNntid(Integer.parseInt(nid));
+                                member2.setProject_id(projectId);
+                                member2.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member2.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
+                        }
+                        if(mp.get("Non NT ID Team Member 3") != null && StringUtils.isNotBlank(mp.get("Non NT ID Team Member 3").toString()) ) {
+                            String nid = compile.matcher(mp.get("Non NT ID Team Member 3").toString().split("\\.")[0]).replaceAll("");
+                            if(nid.length()>12) nid = "";
+                            if(nid!=""&&nids.indexOf(nid)<0){
+                                nidt+=","+nid;
+                                numb++;
+                                member3 = new ProjectDetailEntity();
+                                member3.setNntid(Integer.parseInt(nid));
+                                member3.setProject_id(projectId);
+                                member3.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
+                                member3.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
+                            }
                         }
 
-                        int membIndex = 1;
-                        while (mp.get("Team Member " + membIndex) != null && StringUtils.isNotEmpty(mp.get("Team Member " + membIndex).toString())  ) {
+                        int membrIndex = 1;
+                        while (mp.get("Team Member " + membrIndex) != null && StringUtils.isNotEmpty(mp.get("Team Member " + membrIndex).toString())  ) {
                             ProjectDetailEntity  member = new ProjectDetailEntity();
                             member.setProject_id(projectId);
-                            member.setMember_email(mp.get("Team Member " + membIndex + " Email Address")!=null?mp.get("Team Member " + membIndex++ + " Email Address").toString():"");
+                            member.setMember_email(mp.get("Team Member " + membrIndex + " Email Address")!=null?mp.get("Team Member " + membrIndex++ + " Email Address").toString():"");
                             member.setProject_type(mp.get("Project Type") != null ? mp.get("Project Type").toString() : "");
                             member.setClose_date(mp.get("Closed Date") != null ? mp.get("Closed Date").toString() : "");
                             cache.add(member);
-                            x++;
+                            numb++;
                         }
                         if (mp.get("Estimated Hard Savings") != null && StringUtils.isNotEmpty(mp.get("Estimated Hard Savings").toString())) {
-                            leader.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()) * (3/x));
-                            if(ninitdi!=null)ninitdi.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()) * (1/x));
+                            Double money = Double.valueOf(mp.get("Estimated Hard Savings").toString());
+                            Double leadm = money%numb;
+                            Double cham = money - leadm;
+                            leader.setHard_saving((cham/numb)*2+leadm);
+                            if(member1!=null)member1.setHard_saving(cham/numb);
+                            if(member2!=null)member2.setHard_saving(cham/numb);
+                            if(member3!=null)member3.setHard_saving(cham/numb);
                             for (ProjectDetailEntity pj : cache) {
-                                pj.setHard_saving(Double.valueOf(mp.get("Estimated Hard Savings").toString()) * (1/x));
+                                pj.setHard_saving(cham/numb);
                             }
                         }
                         insDList.add(leader);
-                        if(ninitdi!=null)insDList.add(ninitdi);
+                        if(member1!=null)insDList.add(member1);
+                        if(member2!=null)insDList.add(member2);
+                        if(member3!=null)insDList.add(member3);
                         for (ProjectDetailEntity pj : cache) {
                             insDList.add(pj);
                         }
@@ -296,9 +336,9 @@ public class ProjectController {
                     inserList.add(project);
                 }
             }
-            for (ProjectEntity mp : inserList) {
-                System.out.println(mp.toString());
-            }
+//            for (ProjectEntity mp : inserList) {
+//                System.out.println(mp.toString());
+//            }
 //            更新数据
             if(inserList.size()>0) projectService.saveBatch(inserList, 2000);
             if(updateList.size()>0) projectService.updateBatchById(updateList, 500);
@@ -446,5 +486,16 @@ public class ProjectController {
     @PostMapping("/exportCaseMsg")
     public R exportCaseMsg(@RequestParam Map<String,Object> params) {
         return R.ok().put("data", projectService.exportCaseMsg(params));
+    }
+
+    /**
+     * 手动更新目标
+     *
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/setTarget")
+    public R setTarget() {
+        return R.ok();
     }
 }

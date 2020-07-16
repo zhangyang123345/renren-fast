@@ -113,4 +113,10 @@ public interface ProjectService extends IService<ProjectEntity> {
      * @return
      */
     public List<Map> empPeoMsg(String parmas);
+
+    /**
+     * 手动更新目标
+     * @return
+     */
+    public Boolean setTarget();
 }

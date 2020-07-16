@@ -146,4 +146,10 @@ public interface ProjectDao extends BaseMapper<ProjectEntity> {
      * @return
      */
     public List<Map> empPeoMsg(String params);
+
+    /**
+     * 手动更新目标
+     * @return
+     */
+    public Boolean setTarget();
  }

@@ -68,6 +68,10 @@ public interface EmployeesDao extends BaseMapper<EmployeesEntity> {
      */
     public List<Map<String,Object>> getWorkEmpl(Map params);
 
-
-
+    /**
+     * 更新邮箱
+     * @param params
+     * @return
+     */
+    public Boolean upEmail(List<Map> params);
 }

@@ -209,4 +209,37 @@ public class EmployeeController {
         employeesService.setQuit(params);
         return R.ok();
     }
+
+    /**
+     * 批量上传员工信息
+     * @param file
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/upEmail")
+    public R upEmail(MultipartFile file) {
+
+        if (file == null) return R.error();
+        JSONArray excelData = null;
+        try {
+            excelData = new PoiUtils().parseExcelFile(file,1,1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(excelData != null) {
+            List<Map<String, Object>> data = JsonUtil.jsonToObject(excelData.toString(), new ArrayList<Map<String, Object>>().getClass());
+            List<Map> list = new ArrayList<>();
+            for (Map<String, Object> dat : data) {
+                Map da = new HashMap();
+                if(dat.get("工号")!=null) {
+                    da.put("jobNo", dat.get("工号"));
+                    da.put("email", dat.get("邮箱"));
+                    list.add(da);
+                }
+            }
+            employeesService.upEmail(list);
+        }
+        return  R.ok();
+    }
 }

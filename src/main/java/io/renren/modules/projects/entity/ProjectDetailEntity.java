@@ -25,10 +25,6 @@ public class ProjectDetailEntity implements Serializable{
     private  int project_id;
 
     /**
-     *参与者邮箱
-     */
-    private String member_email;
-    /**
      * 完成时间
      */
     private Date close_date;
@@ -37,7 +33,7 @@ public class ProjectDetailEntity implements Serializable{
      */
     private  String project_type;
     /**
-     * NTID
+     * 工号
      */
     private int nntid;
     /**
@@ -45,7 +41,20 @@ public class ProjectDetailEntity implements Serializable{
      */
     private  Double  hard_saving ;
 
+    /**
+     * 队员邮箱
+     */
+    private String member_email;
+
     private  static DecimalFormat format = new DecimalFormat("0.0000");
+
+    public String getMember_email() {
+        return member_email;
+    }
+
+    public void setMember_email(String member_email) {
+        this.member_email = member_email;
+    }
 
     public Double getHard_saving() {
         return hard_saving;
@@ -69,14 +78,6 @@ public class ProjectDetailEntity implements Serializable{
 
     public void setProject_id(int project_id) {
         this.project_id = project_id;
-    }
-
-    public String getMember_email() {
-        return member_email;
-    }
-
-    public void setMember_email(String member_email) {
-        this.member_email = member_email;
     }
 
     public Date getClose_date() {

@@ -275,5 +275,16 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectDao, ProjectEntity> i
     public List<Map> empPeoMsg(String params) {
         return baseMapper.empPeoMsg(params);
     }
+
+    /**
+     * 手动更新目标
+     *
+     * @return
+     */
+    @Override
+    public Boolean setTarget() {
+        baseMapper.setTarget();
+        return baseMapper.updateTarget();
+    }
 }
 

@@ -83,7 +83,7 @@ public class ProjectEntity implements Serializable {
      * Non NT ID
      * @return
      */
-    private  int nntid;
+    private  String nntid;
 
     /**
      * 节约类型
@@ -113,11 +113,11 @@ public class ProjectEntity implements Serializable {
         this.hard_saving = hard_saving;
     }
 
-    public int getNntid() {
+    public String getNntid() {
         return nntid;
     }
 
-    public void setNntid(int nntid) {
+    public void setNntid(String nntid) {
         this.nntid = nntid;
     }
 
