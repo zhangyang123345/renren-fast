@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.projects.dao.GlobalDao">
+    <select id="getKey" resultType="Map">
+        select id,email from global ;
+    </select>
+
+    <select id="search" parameterType="Map" resultType="Map">
+        select p.id,p.job_no jobNo,p.pj_no pjNo ,p.pj_name pjName ,p.p_category pCategory ,p.name,p.sex,p.phone,p.email,p.plant_type plantType ,
+        p.department,p.position,p.cost_category costCategory ,p.wclass,p.line_type lineType,p.office_location officeLocation,p.director ,gl.region,
+        gl.pass_exam passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,gl.valid,gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+
+        <if test="start != null and start != ''">
+            and gl.certification_date >= #{start}
+        </if>
+        <if test="end != null and end != ''">
+            and gl.certification_date &lt;= #{end}
+        </if>
+        <if test="passExam != null and passExam != ''">
+            and  gl.pass_exam= #{passExam}
+        </if>
+        <if test="valid != null and valid != ''">
+            and  gl.valid = #{valid}
+        </if>
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" pjNo!=null and pjNo !='' ">
+            and p.pj_no =  #{pjNo}
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+        <if test=" entryDateStart!= null and entryDateStart != ''">
+            and  p.entry_date >= #{entryDateStart}
+        </if>
+        <if test=" entryDateEnd!= null and entryDateEnd != ''">
+            and  p.entry_date  &lt;= #{entryDateEnd}
+        </if>
+        <if test="active != null and active != ''">
+            and p.active = #{active}
+        </if>
+         order by p.id asc limit #{pageOffset},#{rows}
+    </select>
+    <select id="listAll" parameterType="Map" resultType="Map">
+        select p.id,p.job_no jobNo,p.pj_no pjNo ,p.pj_name pjName ,p.p_category pCategory ,p.name,p.sex,p.phone,p.email,p.plant_type plantType ,
+        p.department,p.position,p.cost_category costCategory ,p.wclass,p.line_type lineType,p.office_location officeLocation,p.director ,gl.region,
+        gl.pass_exam passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,gl.valid,gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+
+        <if test="start != null and start != ''">
+            and gl.certification_date >= #{start}
+        </if>
+        <if test="end != null and end != ''">
+            and gl.certification_date &lt;= #{end}
+        </if>
+        <if test="passExam != null and passExam != ''">
+            and  gl.pass_exam= #{passExam}
+        </if>
+        <if test="valid != null and valid != ''">
+            and  gl.valid = #{valid}
+        </if>
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" pjNo!=null and pjNo !='' ">
+            and p.pj_no =  #{pjNo}
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+        <if test=" entryDateStart!= null and entryDateStart != ''">
+            and  p.entry_date >= #{entryDateStart}
+        </if>
+        <if test=" entryDateEnd!= null and entryDateEnd != ''">
+            and  p.entry_date  &lt;= #{entryDateEnd}
+        </if>
+        <if test="active != null and active != ''">
+            and p.active = #{active}
+        </if>
+         order by p.id asc limit #{pageOffset},#{rows}
+    </select>
+    <select id="searchCount" parameterType="Map" resultType="int">
+        select count(*) from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+        <if test="start != null and start != ''">
+            and gl.certification_date >= #{start}
+        </if>
+        <if test="end != null and end != ''">
+            and gl.certification_date &lt;= #{end}
+        </if>
+        <if test="passExam != null and passExam != ''">
+            and  gl.pass_exam= #{passExam}
+        </if>
+        <if test="valid != null and valid != ''">
+            and  gl.valid = #{valid}
+        </if>
+        <if test=" jobNo!=null and jobNo != ''">
+            and p.job_no  like  CONCAT('',#{jobNo},'%')
+        </if>
+        <if test=" pjNo!=null and pjNo !='' ">
+            and p.pj_no =  #{pjNo}
+        </if>
+        <if test="name != null and name != ''">
+            and  p.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test=" plantType!= null and plantType != ''">
+            and  p.plant_type = #{plantType}
+        </if>
+        <if test=" department!= null and department != ''">
+            and  p.department = #{department}
+        </if>
+        <if test=" position!= null and position != ''">
+            and  p.position = #{position}
+        </if>
+        <if test=" costCategory!= null and costCategory != ''">
+            and  p.cost_category = #{costCategory}
+        </if>
+        <if test=" director!= null and director != ''">
+            and  p.director = #{director}
+        </if>
+        <if test=" lineType!= null and lineType != ''">
+            and  p.line_type = #{lineType}
+        </if>
+        <if test=" entryDateStart!= null and entryDateStart != ''">
+            and  p.entry_date >= #{entryDateStart}
+        </if>
+        <if test=" entryDateEnd!= null and entryDateEnd != ''">
+            and  p.entry_date  &lt;= #{entryDateEnd}
+        </if>
+        <if test="active != null and active != ''">
+            and p.active = #{active}
+        </if>
+    </select>
+    <select id="searchTable" parameterType="Map" resultType="Map">
+     select  count(*) target,separtment, job_no,name,SUM(case when valid = 1 then 1 else 0 end) count ,(SUM(case when valid = 1 then 1 else 0 end)/count(*)) rate  from ( select emp.email,sep.separtment,gl.valid ,gl.certification_no ,sep.job_no,sep.name
+     from separtment sep right join  employee emp  on sep.separtment = emp.separtment  left join global gl on emp.email = gl.email
+     where emp.active = 1 and emp.position not like 'Operator%' and emp.cost_category = 'DL' order by name) etmp  GROUP BY  separtment, job_no,name	 order by  rate desc,count desc,target desc
+    </select>
+</mapper>
