@@ -118,7 +118,7 @@
         select u.pid ,u.qid,u.job_no jobNo,u.ansower,u.uscore,u.create_time createTime,e.name,e.pj_name pjName,e.pj_no pjNo from ansower_sheet u
         <if test="jobNo != null and jobNo != ''">
         right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
-            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
         </if>
         left join employee e on u.job_no = e.job_no
         where 1=1
@@ -134,7 +134,7 @@
         select count(*) from ansower_sheet u
         <if test="jobNo != null and jobNo != ''">
             right  join   (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
-            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
         </if>
         where 1=1
         <if test=" pid !=null and pid != ''">
@@ -149,7 +149,7 @@
         select count(*) from ansower_sheet a
         <if test="jobNo != null and jobNo != ''">
             right  join  (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,
-            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = a.job_no
+            wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = a.job_no
         </if>
         left join examination_paper q on  a.pid = q.pid
         where  a.uscore >= q.pscore
@@ -164,23 +164,19 @@
         drop  table if exists emp ;
     </update>
     <update id="createTemp">
-        create  table if not exists emp as SELECT GROUP_CONCAT(job_no) jobNo  FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo})  jno) as em WHERE FIND_IN_SET(es.job_no, em.jno ) ;
+        create  table if not exists emp as SELECT GROUP_CONCAT(job_no) jobNo  FROM employee es ,(select empCacheInfo(#{jobNo})  jno) as em WHERE FIND_IN_SET(es.job_no, em.jno ) ;
     </update>
     <select id="examDataByDirector" parameterType="Map" resultType="Map">
-        drop  table if exists emp ;
-        create  table if not exists emp as SELECT GROUP_CONCAT(job_no) jobNo  FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo})  jno) as em WHERE FIND_IN_SET(es.job_no, em.jno ) ;
         select
-         (select count(*) from unexamemp u ,emp where FIND_IN_SET(u.job_no,emp.jobNo)   <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if>) unExam ,
-         ( select count(*) from ansower_sheet u  ,emp where FIND_IN_SET(u.job_no,emp.jobNo)  <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> )  examCount ,
-          ( select count(*) from ansower_sheet u  left join examination_paper q on  u.pid = q.pid  ,emp where FIND_IN_SET(u.job_no,emp.jobNo) and  u.uscore >= q.pscore <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> ) qualified  ;
+         (select count(*) from unexamemp u ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo)   <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if>) unExam ,
+         ( select count(*) from ansower_sheet u  ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo)  <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> )  examCount ,
+          ( select count(*) from ansower_sheet u  left join examination_paper q on  u.pid = q.pid  ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo) and  u.uscore >= q.pscore <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> ) qualified  ;
     </select>
     <select id="examHisData" parameterType="Map" resultType="Map">
-        drop  table if exists hismp ;
-        create  table if not exists hismp as SELECT GROUP_CONCAT(job_no) jobNo  FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo})  jno) as em WHERE FIND_IN_SET(es.job_no, em.jno ) ;
         select
-         (select count(*) from unexamemp u ,hismp where FIND_IN_SET(u.job_no,hismp.jobNo)   <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if>) unExam ,
-         ( select count(*) from ansower_sheet u  ,hismp where FIND_IN_SET(u.job_no,hismp.jobNo)  <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> )  examCount ,
-          ( select count(*) from ansower_sheet u  left join examination_paper q on  u.pid = q.pid  ,hismp where FIND_IN_SET(u.job_no,hismp.jobNo) and  u.uscore >= q.pscore <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> ) qualified  ;
+        (select count(*) from unexamemp u ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo)   <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if>) unExam ,
+        ( select count(*) from ansower_sheet u  ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo)  <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> )  examCount ,
+        ( select count(*) from ansower_sheet u  left join examination_paper q on  u.pid = q.pid  ,(select empCacheInfo(#{jobNo})  jobNo) emp where FIND_IN_SET(u.job_no,emp.jobNo) and  u.uscore >= q.pscore <if test=" pid !=null and pid != ''"> and  u.pid = #{pid} </if><if test="pid == null or pid ==''">and u.pid = (select max(pid) pid from examination_paper)</if> ) qualified  ;
     </select>
 
     <select id="getAllExam" parameterType="Map" resultType="Map">

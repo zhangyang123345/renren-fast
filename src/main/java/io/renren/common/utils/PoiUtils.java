@@ -24,16 +24,18 @@ public class PoiUtils {
      * @param file
      * @param excelTemplateRowNum 对应excel模板内容总行数
      * @param jsonRowNum 以excel模板某行作为JSON对象键
-     *
+     * @param filter  是否开启特殊字段过滤
+     * @param filtKey 过滤字段栏位号
+     * @param filtVal 过滤值<包含>
      * @return JSONArray
      */
-    public JSONArray parseExcelFile(MultipartFile file, int excelTemplateRowNum, int jsonRowNum) throws Exception{
+    public JSONArray parseExcelFile(MultipartFile file, int excelTemplateRowNum, int jsonRowNum,boolean filter ,int filtKey,String filtVal) throws Exception{
 
         JSONArray array = new JSONArray();
 
         File newFile = multipartFileToFile(file);
 
-        array = readXLSOrXLSX(newFile, excelTemplateRowNum, jsonRowNum);
+        array = readXLSOrXLSX(newFile, excelTemplateRowNum, jsonRowNum, filter , filtKey, filtVal);
 
         //删除在项目目录下自动生成一个临时的file文件
         File del = new File(newFile.toURI());
@@ -97,7 +99,7 @@ public class PoiUtils {
      * @return
      * @throws Exception
      */
-    public JSONArray readXLSOrXLSX(File file, int excelTemplateRowNum, int jsonRowNum) throws Exception {
+    public JSONArray readXLSOrXLSX(File file, int excelTemplateRowNum, int jsonRowNum,boolean filter ,int filtKey,String filtVal) throws Exception {
         Workbook book = null;
         try {
             book = new XSSFWorkbook(file);
@@ -105,7 +107,7 @@ public class PoiUtils {
             book = new HSSFWorkbook(new FileInputStream(file));
         }
         Sheet sheet = book.getSheetAt(0);
-        return read(sheet, book, excelTemplateRowNum, jsonRowNum);
+        return read(sheet, book, excelTemplateRowNum, jsonRowNum, filter , filtKey, filtVal);
     }
 
     /**
@@ -115,7 +117,7 @@ public class PoiUtils {
      * @return
      * @throws IOException
      */
-    public JSONArray read(Sheet sheet, Workbook book, int excelTemplateRowNum, int jsonRowNum) throws IOException{
+    public JSONArray read(Sheet sheet, Workbook book, int excelTemplateRowNum, int jsonRowNum ,boolean filter ,int filtKey,String filtVal) throws IOException{
         int rowStart = sheet.getFirstRowNum();    // 首行下标
         int rowEnd = sheet.getLastRowNum();    // 尾行下标
         // 如果首行+excelTemplateRowNum-1与尾行相同，表明只有excelTemplateRowNum行，直接返回空数组
@@ -135,17 +137,37 @@ public class PoiUtils {
         JSONArray array = new JSONArray();
         for(int i = rowStart + excelTemplateRowNum; i <= rowEnd ; i++) {
             Row eachRow = sheet.getRow(i);
-            JSONObject obj = new JSONObject();
-            StringBuffer sb = new StringBuffer();
-            for (int k = cellStart; k < cellEnd; k++) {
-                if (eachRow != null) {
-                    String val = getValue(eachRow.getCell(k), i, k, book, false);
-                    sb.append(val);        // 所有数据添加到里面，用于判断该行是否为空
-                    obj.put(keyMap.get(k),val);
+
+            //开启过滤
+            if(filter){
+                //以特殊值为标准
+                if(getValue(eachRow.getCell(filtKey), i, filtKey, book, false).indexOf(filtVal)>=0) {
+                    JSONObject obj = new JSONObject();
+                    StringBuffer sb = new StringBuffer();
+                    for (int k = cellStart; k < cellEnd; k++) {
+                        if (eachRow != null) {
+                            String val = getValue(eachRow.getCell(k), i, k, book, false);
+                            sb.append(val);        // 所有数据添加到里面，用于判断该行是否为空
+                            obj.put(keyMap.get(k), val);
+                        }
+                    }
+                    if (sb.toString().length() > 0) {
+                        array.put(obj);
+                    }
                 }
-            }
-            if (sb.toString().length() > 0) {
-                array.put(obj);
+            }else{
+                JSONObject obj = new JSONObject();
+                StringBuffer sb = new StringBuffer();
+                for (int k = cellStart; k < cellEnd; k++) {
+                    if (eachRow != null) {
+                        String val = getValue(eachRow.getCell(k), i, k, book, false);
+                        sb.append(val);        // 所有数据添加到里面，用于判断该行是否为空
+                        obj.put(keyMap.get(k),val);
+                    }
+                }
+                if (sb.toString().length() > 0) {
+                    array.put(obj);
+                }
             }
         }
         book.close();

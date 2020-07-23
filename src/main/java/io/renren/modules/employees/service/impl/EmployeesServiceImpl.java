@@ -126,4 +126,12 @@ public class EmployeesServiceImpl extends ServiceImpl<EmployeesDao, EmployeesEnt
     public Boolean upEmail(List<Map> params) {
         return baseMapper.upEmail(params);
     }
+    /**
+     * 标记异常人员
+     * @return
+     */
+    @Override
+    public Boolean exception() {
+        return baseMapper.exception();
+    }
 }

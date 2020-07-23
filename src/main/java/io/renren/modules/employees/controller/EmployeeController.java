@@ -28,7 +28,7 @@ public class EmployeeController {
         if (file == null) return R.error();
         JSONArray excelData = null;
         try {
-            excelData = new PoiUtils().parseExcelFile(file,1,1);
+            excelData = new PoiUtils().parseExcelFile(file,1,1,false,0,null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,6 +72,8 @@ public class EmployeeController {
                     }
                 }
             }
+            //标记异常人员
+            employeesService.exception();
             //批量保存
             if(employeeList.size()>0)employeesService.saveBatch(employeeList,500);
             if(updateList.size()>0) employeesService.updateBatchById(updateList,500);
@@ -93,7 +95,7 @@ public class EmployeeController {
         if (file == null) return R.error();
         JSONArray excelData = null;
         try {
-            excelData = new PoiUtils().parseExcelFile(file,1,1);
+            excelData = new PoiUtils().parseExcelFile(file,1,1,false,0,null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,7 +156,6 @@ public class EmployeeController {
     @PostMapping("/search")
     public R searchList(@RequestParam Map<String,Object> parma) {
         Map<String,Object> data =  employeesService.searchList(parma);
-
         return R.ok().put("data",data);
     }
     /**
@@ -205,7 +206,7 @@ public class EmployeeController {
      */
     @ResponseBody
     @PostMapping("/setQuit")
-    public R setQuit(@RequestBody  Map<String, Object> params) {
+    public R setQuit(@RequestParam  Map<String, Object> params) {
         employeesService.setQuit(params);
         return R.ok();
     }
@@ -222,7 +223,7 @@ public class EmployeeController {
         if (file == null) return R.error();
         JSONArray excelData = null;
         try {
-            excelData = new PoiUtils().parseExcelFile(file,1,1);
+            excelData = new PoiUtils().parseExcelFile(file,1,1,false,0,null);
         } catch (Exception e) {
             e.printStackTrace();
         }

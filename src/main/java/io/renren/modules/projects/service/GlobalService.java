@@ -23,7 +23,7 @@ public interface GlobalService extends IService<GlobalEntity> {
      * @param params
      * @return
      */
-    public List<Map> searchTable(Map<String, Object> params);
+    public Map searchTable(Map<String, Object> params);
 
     /**
      * 导出报表

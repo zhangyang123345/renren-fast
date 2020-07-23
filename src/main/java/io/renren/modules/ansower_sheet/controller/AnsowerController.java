@@ -47,7 +47,7 @@ public class AnsowerController {
         if (file == null) return R.error();
         try {
             ExampaperEntity paper = new ExampaperEntity();
-            JSONArray fileData = new PoiUtils().parseExcelFile( file, 1, 1);
+            JSONArray fileData = new PoiUtils().parseExcelFile( file, 1, 1,false,0,null);
             List<Map> ansData = JsonUtil.jsonToObject(fileData.toString(), new ArrayList<Map>().getClass());
             List<AnsowerEntity> ansowerList = new ArrayList<>();
             List<AnsowerEntity> updateList = new ArrayList<>();

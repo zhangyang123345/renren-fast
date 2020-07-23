@@ -74,4 +74,10 @@ public interface EmployeesDao extends BaseMapper<EmployeesEntity> {
      * @return
      */
     public Boolean upEmail(List<Map> params);
+
+    /**
+     * 标记异常人员
+     * @return
+     */
+    public Boolean exception();
 }

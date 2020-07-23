@@ -5,8 +5,6 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -252,14 +250,7 @@ public class ProjectEntity implements Serializable {
     public void setClose_date(String close_date) {
         if (close_date != null && StringUtils.isNotEmpty(close_date)) {
             if(close_date.indexOf(" ")>0) close_date = close_date.substring(0, close_date.indexOf(" "));
-            Date date = null;
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                date = format.parse(close_date);
-                this.close_date = date;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            this.close_date = new Date(close_date);
         }
     }
 }

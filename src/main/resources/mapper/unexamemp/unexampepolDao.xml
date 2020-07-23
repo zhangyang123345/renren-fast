@@ -76,7 +76,7 @@
         </if>
         from unexamemp u
         <if test="jobNo != null and jobNo != ''">
-           right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+           right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
         </if>
         where 1=1
         <if test=" pid !=null and pid != ''">
@@ -89,7 +89,7 @@
     </select>
     <select id="exportExcel" parameterType="Map" resultType="Map">
         select u.id,u.job_no jobNo,u.pid,u.name,u.title ,emp.director,ep.ptype,emp.position,emp.department,'未参考' status  from unexamemp u left join examination_paper ep on u.pid = ep.pid
-           right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+           right  join (SELECT job_no ,position,department ,director FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
         where 1=1
         <if test=" pid !=null and pid != ''">
             and  u.pid = #{pid}
@@ -102,7 +102,7 @@
     <select id="searchCountByDirector" parameterType="Map" resultType="int">
         select count(*) from unexamemp u
         <if test="jobNo != null and jobNo != ''">
-            right  join (SELECT id,job_no ,pj_no,pj_name ,p_category ,name,sex,phone,email,plant_type ,department,position,cost_category ,wclass,line_type ,office_location ,director,entry_date ,comment,active FROM employee es ,(select queryChildrenEmployeeInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
+            right  join (SELECT job_no  FROM employee es ,(select empCacheInfo(#{jobNo}) as jno) as em WHERE FIND_IN_SET(es.job_no, em.jno )) emp on emp.job_no = u.job_no
         </if>
         where 1=1
         <if test=" pid !=null and pid != ''">

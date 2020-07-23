@@ -7,6 +7,8 @@ import io.renren.modules.projects.service.GlobalService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,25 +56,40 @@ public class GlobalServiceImpl extends ServiceImpl<GlobalDao, GlobalEntity> impl
      * @return
      */
     @Override
-    public List<Map> searchTable(Map<String, Object> params) {
+    public Map searchTable(Map<String, Object> params) {
 
+        Map result = new HashMap();
+        List<String> name = new ArrayList<>();
+        List<Integer> count = new ArrayList<>();
+        List<Integer> target = new ArrayList<>();
+        List<String> rate = new ArrayList<>();
+        DecimalFormat format = new DecimalFormat("0.00");
+        int ptarget = 0;
+        int pcount = 0;
         List<Map> data =  baseMapper.searchTable(params);
         if(data != null) {
-            Map xiao = new HashMap();
-            xiao.put("name", "PVD厂");
-            xiao.put("jobNo", 451692);
-            int target = 0;
-            int count = 0;
             for (Map mp : data) {
-                target += (mp.get("target") != null ? Integer.parseInt(mp.get("target").toString()) : 0);
-                count += (mp.get("count") != null ? Integer.parseInt(mp.get("count").toString()) : 0);
+                int targetc = mp.get("target") != null ? Integer.parseInt(mp.get("target").toString()) : 0;
+                int countc = mp.get("count") != null ? Integer.parseInt(mp.get("count").toString()) : 0;
+                Double ratec = mp.get("rate") != null ?Double.valueOf(mp.get("rate").toString()):0.00;
+                name.add(mp.get("name")!=null?mp.get("name").toString():"");
+                count.add(countc);
+                target.add(targetc);
+                rate.add(format.format(ratec * 100));
+
+                ptarget += targetc;
+                pcount += countc;
             }
-            xiao.put("target", target);
-            xiao.put("count", count);
-            xiao.put("rate", count/target);
-            data.add(0, xiao);
+            name.add(0,"PVD厂");
+            count.add(0,pcount);
+            target.add(0,ptarget);
+            rate.add(0, format.format(ptarget != 0 ? (Double.valueOf(pcount) / Double.valueOf(ptarget)) * 100 : 0.0));
         }
-        return data;
+        result.put("name", name);
+        result.put("rate", rate);
+        result.put("count", count);
+        result.put("target", target);
+        return result;
     }
 
     /**

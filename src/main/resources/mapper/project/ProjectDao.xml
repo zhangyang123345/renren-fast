@@ -12,7 +12,8 @@
         from employee ems left join
 
         (select  emp.job_no, sum(case when emp.project_type = 'A3' then 1 else 0 end) A3, sum( case when emp.project_type = 'Blitz' then 1 else 0 end) Blitz,sum( case when emp.project_type != 'Blitz' and emp.project_type != 'A3' then 1 else 0 end) other ,sum( case when emp.close_date is not null then 1 else 0 end) count
-        from 	( select e.id, e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.member_email = e.email left join projects pj on pj.project_id = pd.project_id  where  e.email != '' and e.active = 1 and e.position not like 'Operator%'
+        from 	( select e.id, e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.member_email = e.email left join projects pj on pj.project_id = pd.project_id
+        where  e.email != '' and e.active = 1 and e.position  != 'Operator I'  and  e.position  != 'Operator II' and  e.position  != 'Operator III'
         <if test=" state!= null and state != ''">
             and FIND_IN_SET(pj.state , #{state})
         </if>
@@ -29,7 +30,8 @@
             end
         </if>
         union
-        select e.id,e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.nntid = e.job_no left join projects pj on pj.project_id = pd.project_id  where  e.active = 1 and e.position not like 'Operator%'
+        select e.id,e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.nntid = e.job_no left join projects pj on pj.project_id = pd.project_id
+        where  e.active = 1 and e.position  != 'Operator I'  and  e.position  != 'Operator II' and  e.position  != 'Operator III'
         <if test=" state!= null and state != ''">
             and FIND_IN_SET(pj.state , #{state})
         </if>
@@ -45,7 +47,8 @@
             else (pj.close_date &lt;= #{end} or pj.submit_date &lt;= #{end})
             end
         </if>
-        ) emp GROUP BY  emp.job_no  ) emzp  on ems.job_no = emzp.job_no  where ems.active = 1 and ems.position not like 'Operator%'
+        ) emp GROUP BY  emp.job_no  ) emzp  on ems.job_no = emzp.job_no
+        where ems.active = 1 and ems.position  != 'Operator I'  and  ems.position  != 'Operator II' and  ems.position  != 'Operator III'
         <if test=" jobNo!=null and jobNo != ''">
             and ems.job_no  like  CONCAT('',#{jobNo},'%')
         </if>
@@ -81,7 +84,8 @@
         from employee ems left join
 
         (select  emp.job_no, sum(case when emp.project_type = 'A3' then 1 else 0 end) A3, sum( case when emp.project_type = 'Blitz' then 1 else 0 end) Blitz,sum( case when emp.project_type != 'Blitz' and emp.project_type != 'A3' then 1 else 0 end) other ,sum( case when emp.close_date is not null then 1 else 0 end) count
-        from 	( select e.id, e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.member_email = e.email left join projects pj on pj.project_id = pd.project_id  where  e.email != '' and e.active = 1 and e.position not like 'Operator%'
+        from 	( select e.id, e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.member_email = e.email left join projects pj on pj.project_id = pd.project_id
+        where  e.email != '' and e.active = 1 and e.position  != 'Operator I'  and  e.position  != 'Operator II' and  e.position  != 'Operator III'
         <if test=" state!= null and state != ''">
             and FIND_IN_SET(pj.state , #{state})
         </if>
@@ -98,7 +102,8 @@
             end
         </if>
         union
-        select e.id,e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.nntid = e.job_no left join projects pj on pj.project_id = pd.project_id  where  e.active = 1 and e.position not like 'Operator%'
+        select e.id,e.job_no,e.name,e.email,e.phone,e.department,e.position,e.line_type ,e.director,pj.project_type,pd.project_id,pd.hard_saving,pd.close_date  from employee e left join  project_detail pd on pd.nntid = e.job_no left join projects pj on pj.project_id = pd.project_id
+        where  e.active = 1 and e.position  != 'Operator I'  and  e.position  != 'Operator II' and  e.position  != 'Operator III'
         <if test=" state!= null and state != ''">
             and FIND_IN_SET(pj.state , #{state})
         </if>
@@ -114,7 +119,8 @@
             else (pj.close_date &lt;= #{end} or pj.submit_date &lt;= #{end})
             end
         </if>
-        ) emp GROUP BY  emp.job_no  ) emzp  on ems.job_no = emzp.job_no where ems.active = 1 and ems.position not like 'Operator%'
+        ) emp GROUP BY  emp.job_no  ) emzp  on ems.job_no = emzp.job_no
+        where ems.active = 1 and ems.position  != 'Operator I'  and  ems.position  != 'Operator II' and  ems.position  != 'Operator III'
         <if test=" jobNo!=null and jobNo != ''">
             and ems.job_no  like  CONCAT('',#{jobNo},'%')
         </if>
@@ -142,7 +148,7 @@
         order by ems.id asc
     </select>
     <select id="searchListCount" parameterType="Map" resultType="int">
-        select count(*) from employee p  where active = 1 and p.position not like 'Operator%'
+        select count(*) from employee p  where active = 1 and p.position  != 'Operator I'  and  p.position  != 'Operator II' and  p.position  != 'Operator III'
         <if test=" jobNo!=null and jobNo != ''">
             and p.job_no  like  CONCAT('',#{jobNo},'%')
         </if>
@@ -252,7 +258,7 @@
         </if>
     </select>
     <select id="getPj_id" resultType="Map">
-        select id,project_id  projectId from projects
+        select id,project_id  projectId ,close_date closeDate from projects
     </select>
 
     <update id="updateTarget">
@@ -353,7 +359,8 @@
     <select id="queryProject" parameterType="Map" resultType="Map">
         select em.job_no jobNo,em.email,em.name,em.director,em.department,em.position,em.line_type lineType,sp.project_id projectId,sp.project_name projectName ,sp.project_type projectType ,sp.state ,
          (case when sp.leader_email = em.email then  'leader' when FIND_IN_SET(em.job_no,sp.nntid) then 'NT'  else 'member' end)  role
-        from employee em, (SELECT project_id,project_name,project_type, state,leader_email,concat(leader_email,',',member_email) emails,nntid FROM projects where project_id = #{projectId}) sp  where  ((FIND_IN_SET(em.email, sp.emails)  or em.email = sp.leader_email) and em.email != '')  or ( FIND_IN_SET(em.job_no,sp.nntid) and em.email = '')
+        from employee em, (SELECT project_id,project_name,project_type, state,leader_email,concat(leader_email,',',member_email) emails,nntid FROM projects where project_id = #{projectId}) sp
+        where  ((FIND_IN_SET(em.email, sp.emails)  or em.email = sp.leader_email) and em.email != '')  or  FIND_IN_SET(em.job_no,sp.nntid) order by  role desc
     </select>
 
     <select id="queryDTop" parameterType="Map" resultType="Map">
@@ -372,7 +379,8 @@
     <select id="empPeoList" parameterType="Map" resultType="Map">
         select pt.id,pt.project_id projectId ,pt.project_name projectName,pt.project_type projectType,pt.state ,pt.lsc_date lscDate,pt.submit_date submitDate,pt.submit_email submitEmail,pt.process_improve  processImprove,
             pt.process_email processEmail,pt.team_leader teamLeader,pt.leader_email leaderEmail,pt.team_member teamMember,pt.member_email memberEmail,pt.customer_field  customerField,pt.close_date closeDate ,pt.nntid,pt.hard_saving hardSaving
-              from projects pt, employee em  where em.job_no = #{jobNo}  and   FIND_IN_SET(em.job_no , pt.nntid)
+              from project_detail pd left join  projects pt on pd.project_id = pt.project_id , employee em  where em.job_no = #{jobNo}
+         and (pd.nntid = em.job_no  or (em.email = pd.member_email and pd.member_email != ''))
         <if test=" state!= null and state != ''">
             and  FIND_IN_SET(pt.state , #{state})
         </if>
@@ -391,7 +399,8 @@
         order by pt.close_date desc   limit #{pageOffset},#{rows}
     </select>
     <select id="empPeoCount" parameterType="Map" resultType="int">
-        select count(*) from projects pt, employee em  where em.job_no = #{jobNo}  and  FIND_IN_SET(em.job_no , pt.nntid))
+        select count(*) from project_detail pd left join  projects pt on pd.project_id = pt.project_id, employee em  where em.job_no = #{jobNo}
+        and (pd.nntid = em.job_no  or (em.email = pd.member_email and pd.member_email != ''))
         <if test=" state!= null and state != ''">
             and  FIND_IN_SET(pt.state , #{state})
         </if>

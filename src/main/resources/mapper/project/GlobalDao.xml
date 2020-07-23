@@ -3,13 +3,14 @@
 
 <mapper namespace="io.renren.modules.projects.dao.GlobalDao">
     <select id="getKey" resultType="Map">
-        select id,email from global ;
+        select id,job_no from global ;
     </select>
 
     <select id="search" parameterType="Map" resultType="Map">
         select p.id,p.job_no jobNo,p.pj_no pjNo ,p.pj_name pjName ,p.p_category pCategory ,p.name,p.sex,p.phone,p.email,p.plant_type plantType ,
         p.department,p.position,p.cost_category costCategory ,p.wclass,p.line_type lineType,p.office_location officeLocation,p.director ,gl.region,
-        gl.pass_exam passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,gl.valid,gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+        gl.pass_exam passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,gl.valid,gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no
+        where  p.position  != 'Operator I'  and  p.position  != 'Operator II' and  p.position  != 'Operator III'
 
         <if test="start != null and start != ''">
             and gl.certification_date >= #{start}
@@ -41,7 +42,7 @@
         <if test=" position!= null and position != ''">
             and  p.position = #{position}
         </if>
-        <if test=" costCategory!= null and costCategory != ''">
+        <if test=" costCategory != null and costCategory != '' and costCategory != 'null'">
             and  p.cost_category = #{costCategory}
         </if>
         <if test=" director!= null and director != ''">
@@ -59,12 +60,15 @@
         <if test="active != null and active != ''">
             and p.active = #{active}
         </if>
-         order by p.id asc limit #{pageOffset},#{rows}
+         order by gl.certification_date desc limit #{pageOffset},#{rows}
     </select>
     <select id="listAll" parameterType="Map" resultType="Map">
         select p.id,p.job_no jobNo,p.pj_no pjNo ,p.pj_name pjName ,p.p_category pCategory ,p.name,p.sex,p.phone,p.email,p.plant_type plantType ,
         p.department,p.position,p.cost_category costCategory ,p.wclass,p.line_type lineType,p.office_location officeLocation,p.director ,gl.region,
-        gl.pass_exam passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,gl.valid,gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+        (case when gl.pass_exam = 1 then '通过' else '未通过' end ) passExam,gl.certification_no certificationNo,gl.certification_date certificationDate,gl.expire_on expireOn,
+        (case when gl.valid = 1 then '有效' else '无效' end  ) valid,
+        gl.blitz,gl.pja_1,gl.pja_2,gl.pja_3,gl.pja_4 from employee p left join global gl on p.job_no = gl.job_no
+        where  p.position  != 'Operator I'  and  p.position  != 'Operator II' and  p.position  != 'Operator III'
 
         <if test="start != null and start != ''">
             and gl.certification_date >= #{start}
@@ -114,10 +118,11 @@
         <if test="active != null and active != ''">
             and p.active = #{active}
         </if>
-         order by p.id asc limit #{pageOffset},#{rows}
+         order by p.id asc
     </select>
     <select id="searchCount" parameterType="Map" resultType="int">
-        select count(*) from employee p left join global gl on p.job_no = gl.job_no where  p.position not like 'Operator%'
+        select count(*) from employee p left join global gl on p.job_no = gl.job_no
+        where  p.position  != 'Operator I'  and  p.position  != 'Operator II' and  p.position  != 'Operator III'
         <if test="start != null and start != ''">
             and gl.certification_date >= #{start}
         </if>
@@ -170,6 +175,6 @@
     <select id="searchTable" parameterType="Map" resultType="Map">
      select  count(*) target,separtment, job_no,name,SUM(case when valid = 1 then 1 else 0 end) count ,(SUM(case when valid = 1 then 1 else 0 end)/count(*)) rate  from ( select emp.email,sep.separtment,gl.valid ,gl.certification_no ,sep.job_no,sep.name
      from separtment sep right join  employee emp  on sep.separtment = emp.separtment  left join global gl on emp.email = gl.email
-     where emp.active = 1 and emp.position not like 'Operator%' and emp.cost_category = 'DL' order by name) etmp  GROUP BY  separtment, job_no,name	 order by  rate desc,count desc,target desc
+     where emp.active = 1 and emp.position  != 'Operator I'  and  emp.position  != 'Operator II' and  emp.position  != 'Operator III' and emp.cost_category = #{costCategory} order by name) etmp  GROUP BY  separtment, job_no,name having separtment is not null	 order by  rate desc,count desc,target desc
     </select>
 </mapper>

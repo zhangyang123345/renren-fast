@@ -41,7 +41,7 @@ public class GlobalController {
     public R upload(MultipartFile file) {
         if (file == null) return R.error("文件异常！");
         try {
-            JSONArray fileData = new PoiUtils().parseExcelFile(file, 1, 1);
+            JSONArray fileData = new PoiUtils().parseExcelFile(file, 1, 1,true,8,"Chengdu");
             List<Map> ansData = JsonUtil.jsonToObject(fileData.toString(), new ArrayList<Map>().getClass());
             //获取原数据
             List<Map> cellDate = globalService.getKey();
@@ -49,7 +49,7 @@ public class GlobalController {
             List<GlobalEntity> inserList = new ArrayList();
             List<GlobalEntity> updateList = new ArrayList();
             for (Map mp: cellDate) {
-                cellKey.put(mp.get("email").toString(), mp.get("id"));
+                cellKey.put(mp.get("job_no").toString(), mp.get("id"));
             }
             Pattern compile = Pattern.compile("[^0-9]");
             for (Map mp : ansData) {
@@ -70,8 +70,8 @@ public class GlobalController {
                     global.setPja_3(mp.get("A3") != null ? mp.get("A3").toString() : "");
                     global.setPja_4(mp.get("A4") != null ? mp.get("A4").toString() : "");
 
-                    if (cellKey.containsKey(mp.get("Email").toString())) {
-                        global.setId(Integer.parseInt(cellKey.get(mp.get("Email").toString()).toString()));
+                    if (cellKey.containsKey(num)) {
+                        global.setId(Integer.parseInt(cellKey.get(num).toString()));
                         updateList.add(global);
                     } else {
                         inserList.add(global);
@@ -103,7 +103,7 @@ public class GlobalController {
     @ResponseBody
     @PostMapping("/searchTable")
     public R searchTable(@RequestParam  Map<String, Object> params) {
-        return R.ok().put("list", globalService.searchTable(params));
+        return R.ok().put("data", globalService.searchTable(params));
     }
 
     /**

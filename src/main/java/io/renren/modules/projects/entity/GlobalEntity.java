@@ -5,8 +5,6 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
@@ -126,14 +124,7 @@ public class GlobalEntity implements Serializable {
     public void setCertification_date(String certification_date) {
         if (certification_date != null && StringUtils.isNotEmpty(certification_date)) {
             if(certification_date.indexOf(" ")>0) certification_date = certification_date.substring(0, certification_date.indexOf(" "));
-            Date date = null;
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                date = format.parse(certification_date);
-                this.certification_date = date;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            this.certification_date = new Date(certification_date);
         }
     }
 
@@ -144,14 +135,7 @@ public class GlobalEntity implements Serializable {
     public void setExpire_on(String expire_on) {
         if (expire_on != null && StringUtils.isNotEmpty(expire_on)) {
             if(expire_on.indexOf(" ")>0) expire_on = expire_on.substring(0, expire_on.indexOf(" "));
-            Date date = null;
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                date = format.parse(expire_on);
-                this.expire_on = date;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            this.expire_on = new Date(expire_on);
         }
     }
 
