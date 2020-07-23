@@ -248,8 +248,11 @@ public class ProjectEntity implements Serializable {
     }
 
     public void setClose_date(String close_date) {
+        System.out.println(close_date);
         if (close_date != null && StringUtils.isNotEmpty(close_date)) {
             if(close_date.indexOf(" ")>0) close_date = close_date.substring(0, close_date.indexOf(" "));
+            close_date = close_date.replaceAll("-", "/");
+            System.out.println(close_date);
             this.close_date = new Date(close_date);
         }
     }
